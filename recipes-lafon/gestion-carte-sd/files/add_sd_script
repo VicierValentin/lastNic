@@ -1,0 +1,8 @@
+#!/bin/sh
+#Add sd card detect
+echo "Ajout de la carte sd" >> /data/log_rules.txt 2>&1
+mkdir /media/sd >> /data/log_rules.txt 2>&1
+chmod +rw /media/sd >> /data/log_rules.txt 2>&1
+mount /dev/mmcblk0p1 /media/sd >> /data/log_rules.txt 2>&1
+#ls /media/sd /media/sd >> /data/log_rules.txt 2>&1
+

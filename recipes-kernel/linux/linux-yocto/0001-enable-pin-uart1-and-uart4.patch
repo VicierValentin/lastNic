@@ -1,0 +1,64 @@
+From 19a4076b3449b538fcddf4a1bc5daac6862805bf Mon Sep 17 00:00:00 2001
+From: cdemenou <charles.demenou@madic.com>
+Date: Tue, 17 Dec 2024 15:20:27 +0100
+Subject: [PATCH] enable-pin-uart1-and-uart4
+
+---
+ arch/arm/boot/dts/am335x-bone-common.dtsi | 29 ++++++++++++++++++++++-
+ 1 file changed, 28 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/am335x-bone-common.dtsi b/arch/arm/boot/dts/am335x-bone-common.dtsi
+index 0ccdc7cd463b..73d9809247e7 100644
+--- a/arch/arm/boot/dts/am335x-bone-common.dtsi
++++ b/arch/arm/boot/dts/am335x-bone-common.dtsi
+@@ -95,6 +95,19 @@ AM33XX_PADCONF(AM335X_PIN_UART0_RXD, PIN_INPUT_PULLUP, MUX_MODE0)
+ 			AM33XX_PADCONF(AM335X_PIN_UART0_TXD, PIN_OUTPUT_PULLDOWN, MUX_MODE0)
+ 		>;
+ 	};
++	uart1_pins: pinmux_uart1_pins {
++		pinctrl-single,pins = <
++			AM33XX_PADCONF(AM335X_PIN_UART1_RXD, PIN_INPUT_PULLUP, MUX_MODE0)
++			AM33XX_PADCONF(AM335X_PIN_UART1_TXD, PIN_OUTPUT_PULLDOWN, MUX_MODE0)
++		>;
++	};
++	
++	uart4_pins: pinmux-uart4-pins {
++		pinctrl-single,pins = <
++			AM33XX_PADCONF(AM335X_PIN_GPMC_WAIT0, PIN_INPUT_PULLUP, MUX_MODE6)	/* (T17) gpmc_wait0.uart4_rxd */
++			AM33XX_PADCONF(AM335X_PIN_GPMC_WPN, PIN_OUTPUT_PULLUP, MUX_MODE6)	/* (U17) gpmc_wpn.uart4_txd */
++		>;
++	};
+ 
+ 	clkout2_pin: pinmux_clkout2_pin {
+ 		pinctrl-single,pins = <
+@@ -191,6 +204,20 @@ &uart0 {
+ 	status = "okay";
+ };
+ 
++&uart1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart1_pins>;
++
++	status = "okay";
++};
++
++&uart4 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart4_pins>;
++
++	status = "okay";
++};
++
+ &usb0 {
+ 	dr_mode = "peripheral";
+ 	interrupts-extended = <&intc 18 &tps 0>;
+@@ -403,4 +430,4 @@ &rtc {
+ 
+ &pruss_tm {
+ 	status = "okay";
+-};
++};
+\ No newline at end of file
+-- 
+2.34.1
+

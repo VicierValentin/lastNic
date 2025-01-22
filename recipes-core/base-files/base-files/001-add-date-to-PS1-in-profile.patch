@@ -1,0 +1,16 @@
+diff -ruN base-files-origin/profile base-files-modified/profile
+--- base-files-origin/profile	2020-09-24 11:32:01.211448276 +0000
++++ base-files-modified/profile	2020-09-24 11:33:22.772852044 +0000
+@@ -6,10 +6,10 @@
+ [ "$TERM" ] || TERM="vt100"	# Basic terminal capab. For screen etc.
+ 
+ # Add /sbin & co to $PATH for the root user
+-[ "$HOME" != "ROOTHOME" ] || PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin
++[ "$HOME" != "/root" ] || PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin:/usr/local/lib/nodejs/bin/
+ 
+ # Set the prompt for bash and ash (no other shells known to be in use here)
+-[ -z "$PS1" ] || PS1='\u@\h:\w\$ '
++[ -z "$PS1" ] || PS1=`date +"%d-%m-%y"`':\u@\h:\w\$ '
+ 
+ if [ -d /etc/profile.d ]; then
+ 	for i in /etc/profile.d/*.sh; do

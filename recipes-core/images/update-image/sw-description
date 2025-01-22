@@ -1,0 +1,78 @@
+software =
+{
+	version = "1.0";
+
+	easy = {
+		hardware-compatibility: [ "SYBB"];
+		stable : {
+			rootfsA : {
+				images: (
+					{
+						filename = "easyborn-lafon-master-beaglebone-lafon.ext4.gz";
+						type = "raw";
+						sha256 = "6761ae7a57e72caeb0ed464b6613cbdce3d15ba063dbf83a1467fa8d972ba190";
+						installed-directly = true;
+						compressed = true;
+						device = "/dev/mmcblk1p2";
+					}
+				);
+				scripts: (
+					{
+						filename = "majRootFs.sh";
+						type = "postinstall";
+						sha256 = "7d68f5dcccf28ece87a8e38f9f6d1d1680f06c65b38d8404e706f2ee37c8ecbc";
+					}
+				);
+						
+				uboot: (
+					{
+						name = "bootcount";
+						value = "0",
+					},
+					{
+						name = "upgrade_available";
+						value = "1";
+					},
+					{
+						name = "rootpart";
+						value = "2";
+					}
+				);
+
+			};
+			rootfsB : {
+				images: (
+					{
+						filename = "easyborn-lafon-master-beaglebone-lafon.ext4.gz";
+						type = "raw";
+						sha256 = "6761ae7a57e72caeb0ed464b6613cbdce3d15ba063dbf83a1467fa8d972ba190";
+						installed-directly = true;
+						compressed = true;
+						device = "/dev/mmcblk1p3";
+					}
+				);
+				scripts: (
+					{
+						filename = "majRootFs.sh";
+						type = "postinstall";
+						sha256 = "7d68f5dcccf28ece87a8e38f9f6d1d1680f06c65b38d8404e706f2ee37c8ecbc";
+					}
+				);
+				uboot: (
+					{
+						name = "bootcount";
+						value = "0",
+					},
+					{
+						name = "upgrade_available";
+						value = "1";
+					},
+					{
+						name = "rootpart";
+						value = "3";
+					}
+				);
+			};
+		};
+	}
+}

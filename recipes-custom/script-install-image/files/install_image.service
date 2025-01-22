@@ -1,0 +1,11 @@
+[Unit]
+Description=Install Image Script LAFON SAS
+
+[Service] 
+Type=simple
+WorkingDirectory=/root/
+ExecStart=/bin/sh -c 'sleep 5 ; /usr/bin/install_image_magfleet.sh'
+SyslogIdentifier=install_image_magfleet
+
+[Install]
+WantedBy=multi-user.target

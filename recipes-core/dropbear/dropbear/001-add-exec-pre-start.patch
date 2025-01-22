@@ -1,0 +1,13 @@
+diff -ruN dropbear-origin/dropbear@.service dropbear-modified/dropbear@.service
+--- dropbear-origin/dropbear@.service	2020-09-28 07:40:32.048705845 +0000
++++ dropbear-modified/dropbear@.service	2020-09-28 07:41:55.022129394 +0000
+@@ -6,7 +6,8 @@
+ [Service]
+ Environment="DROPBEAR_RSAKEY_DIR=/etc/dropbear"
+ EnvironmentFile=-/etc/default/dropbear
+-ExecStart=-@SBINDIR@/dropbear -i -r ${DROPBEAR_RSAKEY_DIR}/dropbear_rsa_host_key $DROPBEAR_EXTRA_ARGS
++ExecStartPre=/root/pulse.sh
++ExecStart=-@SBINDIR@/dropbear -i -b /root/bannerfile -r ${DROPBEAR_RSAKEY_DIR}/dropbear_rsa_host_key $DROPBEAR_EXTRA_ARGS
+ ExecReload=@BASE_BINDIR@/kill -HUP $MAINPID
+ StandardInput=socket
+ KillMode=process

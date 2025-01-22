@@ -1,0 +1,12 @@
+[Unit]
+Description=Install Image Script LAFON SAS
+
+[Service] 
+Type=simple
+WorkingDirectory=/root/
+ExecStart=/bin/sh -c 'sleep 5 ; update_imageOCPP15_lafon.sh'
+SyslogIdentifier=update_imageOCPP15_lafon
+
+[Install]
+WantedBy=multi-user.target
+

@@ -1,0 +1,12 @@
+[Unit]
+Description=Install Image Script LAFON SAS
+
+[Service] 
+Type=simple
+WorkingDirectory=/root/
+ExecStart=/bin/sh -c 'sleep 5 ; install_image_terrain_lafon.sh'
+SyslogIdentifier=install_image_lafon 
+
+[Install]
+WantedBy=multi-user.target
+

@@ -1,0 +1,12 @@
+[Unit]
+Description=Avoid LCD cursor Blinking
+
+[Service]
+Type=exec
+ExecStart=/root/easy/no-cursor-blink.sh
+OnSuccess=/root/easy/EB_App
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

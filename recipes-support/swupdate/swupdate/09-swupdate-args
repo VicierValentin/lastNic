@@ -1,0 +1,9 @@
+rootfs=`mount | grep "on / type" | cut -d':' -f 2 | cut -d' ' -f 1`
+
+if [ $rootfs == '/dev/mmcblk0p2' ];then
+	selection="-e stable,rootfsB"
+else
+	selection="-e stable,rootfsA"
+fi
+
+SWUPDATE_ARGS="-H pulse:revA ${selection} -f /etc/swupdate.cfg"

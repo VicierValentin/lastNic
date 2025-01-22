@@ -1,0 +1,1 @@
+KERNEL=="mmcblk0p1", ACTION=="remove", SUBSYSTEM=="block", ENV{SYSTEMD_WANTS}+="umount-sd@%k.service"

@@ -1,0 +1,25 @@
+From e78b1ec44344e7250ea4fce113161d568c1b7e0e Mon Sep 17 00:00:00 2001
+From: cdemenou <charles.demenou@madic.com>
+Date: Tue, 17 Dec 2024 16:01:20 +0100
+Subject: [PATCH 6/6] Enable-uart2
+
+---
+ arch/arm/boot/dts/am33xx-l4.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/am33xx-l4.dtsi b/arch/arm/boot/dts/am33xx-l4.dtsi
+index 0896ccd7ddcf..3226d80eb911 100644
+--- a/arch/arm/boot/dts/am33xx-l4.dtsi
++++ b/arch/arm/boot/dts/am33xx-l4.dtsi
+@@ -1141,7 +1141,7 @@ uart2: serial@0 {
+ 				clock-frequency = <48000000>;
+ 				reg = <0x0 0x1000>;
+ 				interrupts = <74>;
+-				status = "disabled";
++				status = "okay";
+ 				dmas = <&edma 30 0>, <&edma 31 0>;
+ 				dma-names = "tx", "rx";
+ 			};
+-- 
+2.34.1
+

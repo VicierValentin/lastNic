@@ -1,0 +1,29 @@
+diff -ruN dropbear-2019.78-origin/default_options.h dropbear-2019.78-modified/default_options.h
+--- dropbear-2019.78-origin/default_options.h	2020-09-28 09:56:29.091442681 +0000
++++ dropbear-2019.78-modified/default_options.h	2020-09-28 10:03:56.431288249 +0000
+@@ -236,11 +236,11 @@
+ 
+ /* And then a global limit to avoid chewing memory if connections 
+  * come from many IPs */
+-#define MAX_UNAUTH_CLIENTS 30
++#define MAX_UNAUTH_CLIENTS 5
+ 
+ /* Default maximum number of failed authentication tries (server option) */
+ /* -T server option overrides */
+-#define MAX_AUTH_TRIES 10
++#define MAX_AUTH_TRIES 3
+ 
+ /* The default file to store the daemon's process ID, for shutdown
+    scripts etc. This can be overridden with the -P flag */
+diff -ruN dropbear-2019.78-origin/sysoptions.h dropbear-2019.78-modified/sysoptions.h
+--- dropbear-2019.78-origin/sysoptions.h	2020-09-28 09:56:29.059442119 +0000
++++ dropbear-2019.78-modified/sysoptions.h	2020-09-28 10:05:23.324879982 +0000
+@@ -20,7 +20,7 @@
+ #endif
+ /* Close connections to clients which haven't authorised after AUTH_TIMEOUT */
+ #ifndef AUTH_TIMEOUT
+-#define AUTH_TIMEOUT 300 /* we choose 5 minutes */
++#define AUTH_TIMEOUT 60 /* we choose 5 minutes */
+ #endif
+ 
+ #define DROPBEAR_SVR_PUBKEY_OPTIONS_BUILT ((DROPBEAR_SVR_PUBKEY_AUTH) && (DROPBEAR_SVR_PUBKEY_OPTIONS))

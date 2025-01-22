@@ -1,0 +1,25 @@
+#!/bin/sh
+
+LED="/sys/class/gpio/gpio49"
+echo 49 > /sys/class/gpio/export 2>>/dev/null
+echo out > ${LED}/direction
+
+update_sequence() {
+    TIME=0.025
+    for i in `seq 1 1`
+        do
+            echo 1 > ${LED}/value
+            sleep ${TIME}
+        done
+    echo 0 > ${LED}/value
+    sleep 0.025
+}
+
+failed() {
+            echo 1 > ${LED}/value
+            exit 0
+    }
+
+while [ 1 -gt 0 ];do 
+    $1
+done

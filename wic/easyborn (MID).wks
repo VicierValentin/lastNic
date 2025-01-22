@@ -1,0 +1,8 @@
+part /boot --source bootimg-partition --ondisk mmcblk --fstype=vfat --label boot --active --align 4 --size 16 --sourceparams="loader=u-boot" --use-uuid
+part / --source rootfs --ondisk mmcblk --fstype=ext4 --label rootfs_A --align 4 --use-uuid 
+part / --source rootfs --ondisk mmcblk --fstype=ext4 --label rootfs_B --align 4 --use-uuid 
+part /data --ondisk mmcblk --source rootfs --rootfs-dir=${IMAGE_ROOTFS}/data --fstype=ext4 --label data --size 128M --align 8192 --extra-space 0
+part /mid_A --ondisk mmcblk --rootfs-dir=${IMAGE_ROOTFS}/mid_A --fstype=ext4 --label mid_A --fixed-size 256M --align 3670016 --extra-space 0
+part /mid_B --ondisk mmcblk --rootfs-dir=${IMAGE_ROOTFS}/mid_B --fstype=ext4 --label mid_B --fixed-size 256M --align 3932160 --extra-space 0
+
+bootloader --append="console=ttyS0,115200 rw"

@@ -1,0 +1,18 @@
+FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
+
+#SRC_URI += "file://gpio.cfg"
+SRC_URI += "file://leds.cfg;subdir=git"
+SRC_URI += "file://iio.cfg;subdir=git"
+SRC_URI += "file://usbrndis.cfg;subdir=git"
+SRC_URI += "file://butpower.cfg;subdir=git"
+SRC_URI += "file://touchscreen.cfg;subdir=git"
+SRC_URI += "file://adc.cfg;subdir=git"
+SRC_URI += "file://adcti.cfg;subdir=git"
+SRC_URI += "file://uarts.cfg;subdir=git"
+SRC_URI += "file://TouchscreenTI_AM335X.cfg;subdir=git"
+SRC_URI += "file://0001-enable-pin-uart1-and-uart4.patch"
+SRC_URI += "file://0002-enable-uart4.patch"
+SRC_URI += "file://0003-enable-uart5.patch"
+SRC_URI += "file://0004-New-Magfleet-dts-for-new-kernel.patch"
+SRC_URI += "file://0005-Enable-uart2.patch"
+

@@ -1,0 +1,7 @@
+[Unit]
+Description= all Magfleet applications
+Wants= magfleet-app.service magfleet-ihm.service magfleet-ctrl.service
+
+[Install]
+WantedBy=multi-user.target
+Alias=application.target

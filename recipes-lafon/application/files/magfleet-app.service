@@ -1,0 +1,14 @@
+[Unit]
+Description=Magfleet init application
+PartOf=magfleet-application.target
+
+[Service]
+Type=notify
+ExecStartPre=/root/easy/no-cursor-blink.sh
+ExecStart=/root/easy/EB_App
+Restart=on-failure
+RestartSec=500ms
+
+[Install]
+WantedBy=magfleet-application.target
+Alias=app.service

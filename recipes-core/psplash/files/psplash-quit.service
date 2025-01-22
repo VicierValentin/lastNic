@@ -1,0 +1,11 @@
+[Unit]
+Description=Terminate psplash boot splash screen
+After=easyborn
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/psplash-write QUIT
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,14 @@
+[Unit]
+Description=MagFleet IHM application
+After=magfleet-app.service
+PartOf=magfleet-application.target
+
+[Service]
+Type=notify
+ExecStart=/root/easy/EB_Ihm
+Restart=always
+RestartSec=500ms
+
+[Install]
+WantedBy=magfleet-application.target
+Alias=ihm.service

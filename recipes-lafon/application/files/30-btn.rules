@@ -1,0 +1,1 @@
+KERNEL=="event*", SUBSYSTEM=="input", SUBSYSTEMS=="input", ATTRS{name}=="gpio_keys", SYMLINK+="cfg_btn", OWNER="E@sy", MODE="0777"

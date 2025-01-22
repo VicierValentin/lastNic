@@ -1,0 +1,1 @@
+KERNEL=="event*", SUBSYSTEM=="input", SUBSYSTEMS=="input", ATTRS{name}=="ILI210x*", SYMLINK+="touchscreen", OWNER="E@sy", MODE="0777"

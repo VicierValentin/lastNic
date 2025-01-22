@@ -1,0 +1,12 @@
+#
+#   Copyright (C) 2019
+#   SPDX-License-Identifier: MIT
+#	Author: Pierre-Jean Texier
+
+proc                 /proc                proc       defaults              0  0
+devpts               /dev/pts             devpts     mode=0620,gid=5       0  0
+tmpfs                /run                 tmpfs      mode=0755,nodev,nosuid,strictatime 0  0
+tmpfs                /var/volatile        tmpfs      defaults              0  0
+LABEL=data           /data                ext4       defaults,x-systemd.growfs              0  2
+LABEL=boot			 /boot				  vfat	     defaults			   0  2
+

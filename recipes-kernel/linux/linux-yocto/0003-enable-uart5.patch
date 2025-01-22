@@ -1,0 +1,25 @@
+From ae0ed588102c6c30dbf4d0dfb7ed242be3782ec1 Mon Sep 17 00:00:00 2001
+From: cdemenou <charles.demenou@madic.com>
+Date: Tue, 17 Dec 2024 15:49:30 +0100
+Subject: [PATCH 3/3] enable-uart5
+
+---
+ arch/arm/boot/dts/am33xx-l4.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/am33xx-l4.dtsi b/arch/arm/boot/dts/am33xx-l4.dtsi
+index decfef658120..0896ccd7ddcf 100644
+--- a/arch/arm/boot/dts/am33xx-l4.dtsi
++++ b/arch/arm/boot/dts/am33xx-l4.dtsi
+@@ -1830,7 +1830,7 @@ uart5: serial@0 {
+ 				clock-frequency = <48000000>;
+ 				reg = <0x0 0x1000>;
+ 				interrupts = <46>;
+-				status = "disabled";
++				status = "okay";
+ 			};
+ 		};
+ 
+-- 
+2.34.1
+

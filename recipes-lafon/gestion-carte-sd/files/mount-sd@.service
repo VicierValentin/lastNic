@@ -1,0 +1,6 @@
+[Unit]
+Description=Mount sd card Service
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/add_sd_script -p /dev/%I

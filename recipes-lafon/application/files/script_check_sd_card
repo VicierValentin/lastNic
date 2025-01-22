@@ -1,0 +1,24 @@
+#!/bin/sh
+# Script to check and mount sd card
+
+checkSd_Card=$(ls /dev/ | grep mmcblk0p1)
+if [ "$checkSd_Card" = "mmcblk0p1" ]
+then
+	echo "presence de la carte sd" >> /root/logs/script_sd.csv 2>&1
+else 
+	echo "Carte sd non presente" >> /root/logs/script_sd.csv 2>&1
+fi
+# Une carte sd est presente, il faut verifier si elle est deja monte
+
+checksd_Mounted=$(lsblk | grep /sd)
+if [ "$checksd_Mounted" ]
+then
+	echo "Carte sd deja monte" >> /root/logs/script_sd.csv 2>&1
+	exit 2
+else 
+	mkdir /media/sd >> /root/logs/script_sd.csv 2>&1
+	chmod +rw /media/sd	>> /root/logs/script_sd.csv 2>&1
+	mount /dev/mmcblk0p1 /media/sd >> /root/logs/script_sd.csv 2>&1
+	echo "Montage de la carte sd" >> /root/logs/script_sd.csv 2>&1 
+fi
+exit 0

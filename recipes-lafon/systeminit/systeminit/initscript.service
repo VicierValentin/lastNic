@@ -1,0 +1,12 @@
+[Unit]
+Description=Init Script LAFON SAS
+
+[Service] 
+Type=simple
+WorkingDirectory=/root/
+ExecStart=/bin/sh -c 'sleep 5 ; /root/initscript.sh'
+SyslogIdentifier=initScript 
+
+[Install]
+WantedBy=multi-user.target
+

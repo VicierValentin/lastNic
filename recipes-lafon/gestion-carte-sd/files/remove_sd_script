@@ -1,0 +1,6 @@
+#!/bin/sh
+# Remove sd card detect
+echo "Demonte la carte sd" >> /data/log_rules.txt 2>&1  
+umount /media/sd >> /data/log_rules.txt 2>&1
+#rmdir /media/sd >> /data/log_rules.txt 2>&1
+

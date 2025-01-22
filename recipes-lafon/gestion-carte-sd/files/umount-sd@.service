@@ -1,0 +1,6 @@
+[Unit]
+Description=Unmount sd card Service
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/remove_sd_script -p /dev/%I

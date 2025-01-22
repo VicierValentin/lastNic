@@ -1,0 +1,14 @@
+[Unit]
+Description=MagFleet Controller application
+After=magfleet-app.service
+PartOf=magfleet-application.target
+
+[Service]
+Type=notify
+ExecStart=/root/easy/EB_Ctrl
+Restart=always
+RestartSec=500ms
+
+[Install]
+WantedBy=magfleet-application.target
+Alias=ctrl.service
