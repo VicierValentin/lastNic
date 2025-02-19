@@ -8,7 +8,7 @@ do_install:append() {
    
    #disabling network stuff
    #sed -i -e "s/enable systemd-networkd.service/disable systemd-networkd.service/g" ${D}${systemd_unitdir}/system-preset/90-systemd.preset
-   sed -i -e "s/enable systemd-resolved.service/disable systemd-resolved.service/g" ${D}${systemd_unitdir}/system-preset/90-systemd.preset
+   #sed -i -e "s/enable systemd-resolved.service/disable systemd-resolved.service/g" ${D}${systemd_unitdir}/system-preset/90-systemd.preset
    
    #disabling unwanted services
     echo "disable busybox-klogd.service" >> ${D}${systemd_unitdir}/system-preset/80-systemd.preset
