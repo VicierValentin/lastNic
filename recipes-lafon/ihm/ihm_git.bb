@@ -12,27 +12,27 @@
 LICENSE = "CLOSED"
 LIC_FILES_CHKSUM = ""
 
-FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
-inherit systemd pkgconfig
+#FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
+SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/ihm.git;protocol=ssh;branch=${VAR_BRANCH}"
+S = "${WORKDIR}/git"
+SRCREV = "${AUTOREV}"
+inherit systemd pkgconfig cmake
 
-DEPENDS += "sqlite3 lib-log gestion-bdd systemd lvgl lv-drivers czmq" 
 
-#SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/ihm.git;protocol=ssh;branch=${VAR_BRANCH}"
-SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/ihm.git;protocol=ssh;branch=noyauihm"
-
+EXTRA_OECMAKE = ""
 
 # Modify these as desired
 PV = "1.0+git${SRCPV}"
-#SRCREV = "08545006b50baa2f523c66ee1c389a19cbf6d6d9"
-SRCREV = "${AUTOREV}"
-
-S = "${WORKDIR}/git"
 PR = "r0"
+
 # NOTE: no Makefile found, unable to determine what needs to be done
 
-do_compile () {
-	oe_runmake yocto
-}
+DEPENDS:append= "sqlite3 lib-log gestion-bdd systemd lvgl lv-drivers czmq libgpiod lib-lon" 
+
+#do_compile () {
+#	cd src
+#	oe_runmake yocto
+#}
 
 do_install () {
 	# Specify install commands here
@@ -40,5 +40,5 @@ do_install () {
 	install -m 0755 ./ihm ${D}/root/easy/EB_Ihm
 }
 
-INSANE_SKIP:${PN} = "ldflags"
+#INSANE_SKIP:${PN} = "ldflags"
 FILES:${PN} = "/root/easy"

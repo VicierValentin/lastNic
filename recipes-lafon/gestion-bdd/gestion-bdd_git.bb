@@ -13,7 +13,7 @@ LICENSE = "CLOSED"
 LIC_FILES_CHKSUM = ""
 S = "${WORKDIR}/git"
 FILESEXTRAPATHS:prepend := "${THISDIR}:"
-SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/gestion_bdd.git;protocol=ssh;branch=libso"
+SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/gestion_bdd.git;protocol=ssh;branch=${VAR_BRANCH_BDD}"
 SRCREV = "${AUTOREV}"
 
 inherit cmake pkgconfig

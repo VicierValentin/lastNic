@@ -21,14 +21,14 @@ SRCREV = "${AUTOREV}"
 do_install () {
 	# Specify install commands here
 	install -d ${D}/etc/udev/rules.d
-	install -m 644 ${WORKDIR}/40-add_sd.rules ${D}/etc/udev/rules.d/40-add_sd.rules
-	install -m 644 ${WORKDIR}/40-remove_sd.rules ${D}/etc/udev/rules.d/40-remove_sd.rules
+	install -m 0644 ${WORKDIR}/40-add_sd.rules ${D}/etc/udev/rules.d/40-add_sd.rules
+	install -m 0644 ${WORKDIR}/40-remove_sd.rules ${D}/etc/udev/rules.d/40-remove_sd.rules
 	install -d ${D}${bindir}
 	install -m 0755 ${WORKDIR}/add_sd_script ${D}${bindir}/add_sd_script
 	install -m 0755 ${WORKDIR}/remove_sd_script ${D}${bindir}/remove_sd_script
 	install -d ${D}${systemd_unitdir}/system
 	install -m 0644 ${WORKDIR}/mount-sd@.service ${D}${systemd_unitdir}/system/
-	install -m 644 ${WORKDIR}/umount-sd@.service ${D}/${systemd_unitdir}/system/
+	install -m 0644 ${WORKDIR}/umount-sd@.service ${D}/${systemd_unitdir}/system/
 }
 
 SYSTEMD_SERVICE:${PN} += "mount-sd@.service "

@@ -13,10 +13,10 @@ LICENSE = "CLOSED"
 LIC_FILES_CHKSUM = ""
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
-inherit systemd pkgconfig
+inherit systemd pkgconfig cmake
 
 
-SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/easyborn-controleur-ftp.git;protocol=ssh;branch=libso"
+SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/easyborn-controleur-ftp.git;protocol=ssh;branch=${VAR_BRANCH}"
 
 
 # Modify these as desired
@@ -28,18 +28,18 @@ S = "${WORKDIR}/git"
 PR = "r0"
 # NOTE: no Makefile found, unable to determine what needs to be done
 
-DEPENDS += "curl openssl sqlite3 gestion-bdd lib-log systemd"
+DEPENDS += "curl openssl sqlite3 gestion-bdd lib-log systemd libgpiod lib-lon"
 
-do_compile () {
-	cd src
-	oe_runmake yocto
-}
+#do_compile () {
+#	cd src
+#	oe_runmake yocto
+#}
 
 
 do_install () {
 	# Specify install commands here
 	install -d ${D}/root/easy
-	install -m 0755 ${S}/src/ctrl ${D}/root/easy/EB_Ctrl
+	install -m 0755 ./ctrl ${D}/root/easy/EB_Ctrl
 	install -d ${D}/data/bdd
 }
 
