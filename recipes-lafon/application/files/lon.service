@@ -1,0 +1,12 @@
+[Unit]
+Description=LON Daemon
+PartOf=magfleet-mid.target
+
+[Service]
+ExecStart=/root/easy/lonifd
+Restart=always
+RestartSec=500ms
+
+[Install]
+WantedBy=magfleet-mid.target
+Alias=lon.service

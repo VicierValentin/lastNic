@@ -54,6 +54,10 @@ IMAGE_INSTALL:append = " \
 	controleur \
 	application \
 	webserver \
+	lib-lon \
+	module-lon \
+	lonifd-daemon \
+	bmap-tools \
 "
 
 # Kernel

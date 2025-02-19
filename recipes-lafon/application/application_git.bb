@@ -19,7 +19,10 @@ SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/main.gi
 SRC_URI += "file://magfleet-app.service"
 SRC_URI += "file://magfleet-ihm.service"
 SRC_URI += "file://magfleet-ctrl.service"
+SRC_URI += "file://magfleet-jnrl.service"
+SRC_URI += "file://lon.service"
 SRC_URI += "file://magfleet-application.target"
+SRC_URI += "file://magfleet-mid.target"
 SRC_URI += "file://20-i2c-screen.rules"
 SRC_URI += "file://30-btn.rules"
 SRC_URI += "file://tty-no-cursor-blink.service"
@@ -53,10 +56,13 @@ do_install () {
 	install -m 644 ${WORKDIR}/20-i2c-screen.rules ${D}/etc/udev/rules.d/20-i2c-screen.rules
 	install -m 644 ${WORKDIR}/30-btn.rules ${D}/etc/udev/rules.d/30-btn.rules
 	install -d ${D}${systemd_unitdir}/system
-	install -m 644 ${WORKDIR}/magfleet-application.target ${D}/${systemd_unitdir}/system	
+	install -m 644 ${WORKDIR}/magfleet-application.target ${D}/${systemd_unitdir}/system
+	install -m 644 ${WORKDIR}/magfleet-mid.target ${D}/${systemd_unitdir}/system
+	install -m 644 ${WORKDIR}/lon.service ${D}/${systemd_unitdir}/system	
 	install -m 644 ${WORKDIR}/magfleet-app.service ${D}/${systemd_unitdir}/system
 	install -m 644 ${WORKDIR}/magfleet-ihm.service ${D}/${systemd_unitdir}/system
 	install -m 644 ${WORKDIR}/magfleet-ctrl.service ${D}/${systemd_unitdir}/system
+	install -m 644 ${WORKDIR}/magfleet-jnrl.service ${D}/${systemd_unitdir}/system
 	install -d ${D}/data
 	install -m 0644 ${WORKDIR}/public.pem ${D}/data/public.pem
 #	install -m 644 ${WORKDIR}/tty-no-cursor-blink.service ${D}/${systemd_unitdir}/system	
@@ -70,6 +76,9 @@ SYSTEMD_SERVICE:${PN} += "magfleet-application.target"
 SYSTEMD_SERVICE:${PN} += "magfleet-app.service"
 SYSTEMD_SERVICE:${PN} += "magfleet-ihm.service"
 SYSTEMD_SERVICE:${PN} += "magfleet-ctrl.service"
+SYSTEMD_SERVICE:${PN} += "magfleet-mid.target"
+SYSTEMD_SERVICE:${PN} += "magfleet-jnrl.service"
+SYSTEMD_SERVICE:${PN} += "lon.service"
 INSANE_SKIP:${PN} = "ldflags"
 FILES:${PN} = "/root/easy \
 				/etc/systemd/system \
