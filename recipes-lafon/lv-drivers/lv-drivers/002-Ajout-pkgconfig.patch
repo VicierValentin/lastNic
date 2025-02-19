@@ -1,0 +1,79 @@
+From b53c58ffcebc5c20b9891b8d93e8c4f514305d31 Mon Sep 17 00:00:00 2001
+From: cdemenou <charles.demenou@madic.com>
+Date: Mon, 3 Feb 2025 17:31:14 +0100
+Subject: [PATCH] Ajout-pckgconfig
+
+---
+ CMakeLists.txt | 27 +++++++++++++++++++++++----
+ 1 file changed, 23 insertions(+), 4 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index fadccaa..169c66e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,11 +1,12 @@
+ cmake_minimum_required(VERSION 3.12.4)
+ 
+-project(lv_drivers HOMEPAGE_URL https://github.com/lvgl/lv_drivers/)
++project(lv_drivers HOMEPAGE_URL https://github.com/lvgl/lv_drivers/ VERSION 8.3.0)
+ 
+ # Option to build as shared library (as opposed to static), default: OFF
+-option(BUILD_SHARED_LIBS "Build shared as library (as opposed to static)" OFF)
++option(BUILD_SHARED_LIBS "Build shared as library (as opposed to static)" ON)
+ 
+ file(GLOB_RECURSE SOURCES ./*.c)
++list(FILTER SOURCES EXCLUDE REGEX .pc/*)
+ 
+ if (BUILD_SHARED_LIBS)
+   add_library(lv_drivers SHARED ${SOURCES})
+@@ -27,9 +28,24 @@ if("${LIB_INSTALL_DIR}" STREQUAL "")
+ endif()
+ 
+ if("${INC_INSTALL_DIR}" STREQUAL "")
+-  set(INC_INSTALL_DIR "include/lvgl/lv_drivers")
++  set(INC_INSTALL_DIR "include/lv_drivers")
+ endif()
+ 
++if("${LV_DRVCONF_PATH}" STREQUAL "")
++  set(LV_DRVCONF_PATH "include")
++endif()
++
++install(
++  FILES "${CMAKE_SOURCE_DIR}/lv_drv_conf.h"
++  DESTINATION "${CMAKE_INSTALL_PREFIX}/${LV_DRVCONF_PATH}/"
++)
++
++configure_file("${CMAKE_SOURCE_DIR}/lv_drivers.pc.in" lv_drivers.pc @ONLY)
++
++install(
++  FILES "${CMAKE_BINARY_DIR}/lv_drivers.pc"
++  DESTINATION "${LIB_INSTALL_DIR}/pkgconfig/")
++
+ install(
+   DIRECTORY "${CMAKE_SOURCE_DIR}/"
+   DESTINATION "${CMAKE_INSTALL_PREFIX}/${INC_INSTALL_DIR}/"
+@@ -37,10 +53,11 @@ install(
+   PATTERN "*.h"
+   PATTERN ".git*" EXCLUDE
+   PATTERN "CMakeFiles" EXCLUDE
++  PATTERN "lv_drv*.h" EXCLUDE
+   PATTERN "docs" EXCLUDE
+   PATTERN "lib" EXCLUDE)
+ 
+-file(GLOB LV_DRIVERS_PUBLIC_HEADERS "${CMAKE_SOURCE_DIR}/lv_drv_conf.h")
++file(GLOB LV_DRIVERS_PUBLIC_HEADERS)
+ 
+ set_target_properties(
+   lv_drivers
+@@ -48,6 +65,8 @@ set_target_properties(
+              ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+              LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+              RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
++             VERSION "${PROJECT_VERSION}"
++             SOVERSION "${PROJECT_VERSION_MAJOR}"
+              PUBLIC_HEADER "${LV_DRIVERS_PUBLIC_HEADERS}")
+ 
+ install(
+-- 
+2.34.1
+
