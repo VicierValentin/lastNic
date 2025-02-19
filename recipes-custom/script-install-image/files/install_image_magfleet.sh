@@ -8,7 +8,7 @@ FOUR="/sys/class/leds/beaglebone:green:usr3"
 echo "Lancement chenillar"
 systemctl start blinkled.service
 echo "Installation de l'image sur le beagle"
-bmaptool copy --nobmap /usr/share/base-image-lafon-beaglebone-lafon.rootfs.wic /dev/mmcblk1
+bmaptool copy /usr/share/base-image-lafon-beaglebone-lafon.rootfs.wic --bmap /usr/share/base-image-lafon-beaglebone-lafon.rootfs.wic.bmap /dev/mmcblk1
 if [ $? = 0 ];then
 	echo ok
 	systemctl stop blinkled.service
