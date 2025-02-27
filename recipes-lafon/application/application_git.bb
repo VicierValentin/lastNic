@@ -40,7 +40,7 @@ S = "${WORKDIR}/git"
 PR = "r0"
 # NOTE: no Makefile found, unable to determine what needs to be done
 
-DEPENDS = "systemd"
+DEPENDS = "systemd lib-log"
 
 do_compile () {
 	oe_runmake default
