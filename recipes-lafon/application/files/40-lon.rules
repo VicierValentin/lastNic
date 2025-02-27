@@ -1,0 +1,1 @@
+SUBSYSTEM=="tty",ATTRS{idVendor}=="0920", ATTRS{idProduct}=="5550", RUN+="/root/easy/lonifd -d /dev/%k" , OWNER="E@sy"
