@@ -1,38 +1,76 @@
-From b72cd8046bf3e743cbfe43699e5bf42ce4deab13 Mon Sep 17 00:00:00 2001
+From e89deb6460546279b6d00ae89c66779d1d0f2f2e Mon Sep 17 00:00:00 2001
 From: cdemenou <charles.demenou@madic.com>
-Date: Wed, 22 Jan 2025 10:36:51 +0100
-Subject: [PATCH] Add-New-Magfleet-DTS-for-new-kirkstone-kernel
+Date: Wed, 22 Jan 2025 14:21:57 +0100
+Subject: [PATCH] New-magfleet-devicetree-with-new-linux-kernel
 
 ---
- arch/arm/boot/dts/am335x-boneblack.dts | 264 ++++++++++++++++++++++++-
- 1 file changed, 262 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/am335x-boneblack.dts | 269 ++++++++++++++++++++++++-
+ 1 file changed, 261 insertions(+), 8 deletions(-)
 
 diff --git a/arch/arm/boot/dts/am335x-boneblack.dts b/arch/arm/boot/dts/am335x-boneblack.dts
-index 9312197316f0..b2d4cba913f7 100644
+index 9312197316f0..bf77d945a4da 100644
 --- a/arch/arm/boot/dts/am335x-boneblack.dts
 +++ b/arch/arm/boot/dts/am335x-boneblack.dts
-@@ -2,7 +2,7 @@
- /*
-  * Copyright (C) 2012 Texas Instruments Incorporated - https://www.ti.com/
-  */
--/dts-v1/;
-+/dts-v2/;
- 
- #include "am33xx.dtsi"
- #include "am335x-bone-common.dtsi"
-@@ -14,6 +14,85 @@ / {
- 	compatible = "ti,am335x-bone-black", "ti,am335x-bone", "ti,am33xx";
+@@ -42,14 +42,14 @@ &gpio0 {
+ 		"P9_20 [i2c2_sda]",
+ 		"P9_19 [i2c2_scl]",
+ 		"P9_26 [uart1_rxd]",
+-		"P9_24 [uart1_txd]",
++		"reset_tactile",
+ 		"[rmii1_txd3]",
+ 		"[rmii1_txd2]",
+ 		"[usb0_drvvbus]",
+ 		"[hdmi cec]",
+ 		"P9_41B",
+ 		"[rmii1_txd1]",
+-		"P8_19 [ehrpwm2a]",
++		"backlight",
+ 		"P8_13 [ehrpwm2b]",
+ 		"NC",
+ 		"NC",
+@@ -79,10 +79,10 @@ &gpio1 {
+ 		"P8_11",
+ 		"P8_16",
+ 		"P8_15",
+-		"P9_15A",
+-		"P9_23",
++		"config_btn",
++		"interrupteur_mid",
+ 		"P9_14 [ehrpwm1a]",
+-		"P9_16 [ehrpwm1b]",
++		"rs485_de",
+ 		"[emmc rst]",
+ 		"[usr0 led]",
+ 		"[usr1 led]",
+@@ -101,8 +101,8 @@ &gpio2 {
+ 	gpio-line-names =
+ 		"P9_15B",
+ 		"P8_18",
+-		"P8_7",
+-		"P8_8",
++		"resistance116",
++		"resistance117",
+ 		"P8_10",
+ 		"P8_9",
+ 		"P8_45 [hdmi]",
+@@ -154,7 +154,7 @@ &gpio3 {
+ 		"P9_30 [spi1_d1]",
+ 		"P9_28 [spi1_cs0]",
+ 		"P9_42B [ecappwm0]",
+-		"P9_27",
++		"buzzer",
+ 		"P9_41A",
+ 		"P9_25",
+ 		"NC",
+@@ -168,3 +168,256 @@ &gpio3 {
+ 		"NC",
+ 		"NC";
  };
- 
-+
-+&mcasp0{
-+	status = "disable";
-+};
 +
 +&am33xx_pinmux{
 +                        bb_configbtn_pins: pinmux_bb_configbtn_pins {
 +                                pinctrl-single,pins = <
-+									AM33XX_PADCONF(AM335X_PIN_GPMC_A0, PIN_INPUT | SLEWCTRL_SLOW, MUX_MODE7)//0x040 0x37	// Input 
++									AM33XX_PADCONF(AM335X_PIN_GPMC_A0, PIN_INPUT | SLEWCTRL_SLOW, MUX_MODE7)//0x040 0x37	// Input
 +                                >;
 +                        };
 +
@@ -57,7 +95,7 @@ index 9312197316f0..b2d4cba913f7 100644
 +
 +                        led_pin: pinmux_led_pin {
 +                                pinctrl-single,pins = <
-+									AM33XX_PADCONF(AM335X_PIN_GPMC_AD13, PIN_OUTPUT, MUX_MODE7) // 0x034 0x07 OMAP_MUX_MODE7 | AM33XX_PIN_OUTPUT 
++									AM33XX_PADCONF(AM335X_PIN_GPMC_AD13, PIN_OUTPUT, MUX_MODE7) // 0x034 0x07 OMAP_MUX_MODE7 | AM33XX_PIN_OUTPUT
 +									AM33XX_PADCONF(AM335X_PIN_GPMC_AD12, PIN_OUTPUT, MUX_MODE7) // 0x030 0x07
 +								>;
 +						};
@@ -88,7 +126,7 @@ index 9312197316f0..b2d4cba913f7 100644
 +						};
 +										
 +						dalle_tactile_reset_pin: pinmux-dalle_tactile_reset_pin {
-+								pinctrl-single,pins = < 
++								pinctrl-single,pins = <
 +									AM33XX_PADCONF(AM335X_PIN_UART1_TXD, PIN_OUTPUT, MUX_MODE7) /*Pin address 0x0184 0x07  gpio0.15, OMAP_MUX_MODE7 | AM33XX_PIN_OUTPUT */
 +								>;
 +						};
@@ -101,24 +139,6 @@ index 9312197316f0..b2d4cba913f7 100644
 +						};
 +
 +};
-+
-+
- &cpu0_opp_table {
- 	/*
- 	 * All PG 2.0 silicon may not support 1GHz but some of the early
-@@ -154,7 +233,7 @@ &gpio3 {
- 		"P9_30 [spi1_d1]",
- 		"P9_28 [spi1_cs0]",
- 		"P9_42B [ecappwm0]",
--		"P9_27",
-+		"buzzer",
- 		"P9_41A",
- 		"P9_25",
- 		"NC",
-@@ -168,3 +247,184 @@ &gpio3 {
- 		"NC",
- 		"NC";
- };
 +
 +&i2c1{
 +		status = "okay";
@@ -156,20 +176,20 @@ index 9312197316f0..b2d4cba913f7 100644
 +
 +/{
 +			cfg_btn {
-+					compatible = "gpio-keys";
-+					status = "okay";
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					autorepeat;
-+					pinctrl-names = "default";
-+					pinctrl-0 = <&bb_configbtn_pins>;
-+					configbtn@0
-+					{
-+							linux,code = <0x100>; //100
-+							//linux,input-type = <0x05>;
-+							label = "config_btn";
-+							gpios = <&gpio1 16 1>;	// active low
-+					};
++				compatible = "gpio-keys";
++				status = "okay";
++				#address-cells = <1>;
++				#size-cells = <0>;
++				autorepeat;
++				pinctrl-names = "default";
++				pinctrl-0 = <&bb_configbtn_pins>;
++				configbtn@0
++				{
++						linux,code = <0x100>; //100
++						//linux,input-type = <0x05>;
++						label = "config_btn";
++						gpios = <&gpio1 16 1>;	// active low
++				};
 +			};
 +
 +			mid_switch {
@@ -180,17 +200,17 @@ index 9312197316f0..b2d4cba913f7 100644
 +			};
 +
 +			resistance_indice_carte {
-+					resistance116_indice_carte_pin@1 {
-+							label = "resistance_116";
-+							line-name = "resistance_116";
-+							gpios = <&gpio2 2 0>;
-+					};
-+					resistance117_indice_carte_pin@2 {
-+							label = "resistance_117";
-+							line-name = "resistance_117";
-+							gpios = <&gpio2 3 0>;
-+					};
++				resistance116_indice_carte_pin@1 {
++						label = "resistance_116";
++						line-name = "resistance_116";
++						gpios = <&gpio2 2 0>;
 +				};
++				resistance117_indice_carte_pin@2 {
++						label = "resistance_117";
++						line-name = "resistance_117";
++						gpios = <&gpio2 3 0>;
++				};
++			};
 +};
 +
 +&i2c0{
@@ -202,52 +222,51 @@ index 9312197316f0..b2d4cba913f7 100644
 +};
 +
 +/{
-+                       leds {
-+							pinctrl-names = "default";
-+                            pinctrl-0 = <&led_pin>;
-+                            compatible = "gpio-leds";
++			leds {
++				pinctrl-names = "default";
++				pinctrl-0 = <&led_pin>;
++				compatible = "gpio-leds";
 +
-+                            led_red_pin@1 {
-+									label = "red_led";
-+									gpios = <&gpio1 13 0>;
-+									default-state = "off";
-+							};
-+							led_green_pin@2 {
-+									label = "green_led";
-+									gpios = <&gpio1 12 0>;
-+									default-state = "on";
-+							};
-+						};
++				led_red_pin@1 {
++						label = "red_led";
++						gpios = <&gpio1 13 0>;
++						default-state = "off";
++				};
++				led_green_pin@2 {
++						label = "green_led";
++						gpios = <&gpio1 12 0>;
++						default-state = "on";
++				};
++			};
 +
-+						buzzer {
-+							buzzer@0{
-+								label = "buzzer";
-+								line-name = "buzzer";
-+								gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
-+							};
-+						};
++			buzzer {
++				buzzer@0{
++					label = "buzzer";
++					line-name = "buzzer";
++					gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
++				};
++			};
 +
-+                       rs485 {
-+							rs485@0{
-+								label = "rs485";
-+								line-name = "rs485";
-+								gpios = <&gpio1 19 GPIO_ACTIVE_HIGH>;
-+							};
-+						};
++			rs485 {
++				rs485@0{
++					label = "rs485";
++					line-name = "rs485";
++					gpios = <&gpio1 19 GPIO_ACTIVE_HIGH>;
++				};
++			};
 +
-+						dalle_tactile_reset {
-+							pinctrl-names = "default";
-+                            pinctrl-0 = <&dalle_tactile_reset_pin>;
-+                            compatible = "gpio-leds";
-+							status = "okay";
-+                            dalle_tactile_reset_pin@1 {
-+									label = "dalle_tactile_reset";
-+									line-name = "dalle_tactile_reset";
-+									gpios = <&gpio0 15 0>;
-+ 									default-state = "off";
-+ 							};
-+ 						};
-+						
++			dalle_tactile_reset {
++				pinctrl-names = "default";
++				pinctrl-0 = <&dalle_tactile_reset_pin>;
++				compatible = "gpio-leds";
++				status = "okay";
++				dalle_tactile_reset_pin@1 {
++						label = "dalle_tactile_reset";
++						line-name = "dalle_tactile_reset";
++						gpios = <&gpio0 15 0>;
++						default-state = "off";
++				};
++			};
 +						
 +			backlight {
 +				status = "okay";
@@ -268,8 +287,7 @@ index 9312197316f0..b2d4cba913f7 100644
 +				>;
 +				default-brightness-level = <50>;
 +			};
-+
-+	};
++};
 +
 +&uart2 {
 +	pinctrl-names = "default";
@@ -300,6 +318,7 @@ index 9312197316f0..b2d4cba913f7 100644
 +&am335x_adc {
 +    ti,adc-channels = <0 1 2>;
 +};
++
 -- 
 2.34.1
 
