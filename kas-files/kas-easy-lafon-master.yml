@@ -1,0 +1,93 @@
+#
+#   Copyright (C) 2021
+#   SPDX-License-Identifier: MIT
+#	Author: AIT-ALI Alan
+
+header:
+  version: 8
+
+machine: beaglebone-lafon
+distro: lafon
+target: easyborn-lafon-master
+
+repos:
+  meta-magfleet:
+
+  poky:
+    url: https://git.yoctoproject.org/poky.git
+    refspec: kirkstone
+    layers:
+      meta:
+      meta-poky:
+      meta-yocto-bsp:
+
+    
+  meta-security:
+    url: https://github.com/ni/meta-security.git
+    refspec: nilrt/master/kirkstone
+  
+  meta-swupdate:
+    url: https://github.com/sbabic/meta-swupdate.git
+    refspec: kirkstone
+
+  meta-ti:
+    url: https://github.com/YoeDistro/meta-ti.git
+    refspec: kirkstone
+    layers:
+      meta-ti-bsp:
+      meta-ti-extras:
+
+  meta-arm:
+    url: https://github.com/jonmason/meta-arm.git
+    refspec: yocto-4.0
+    layers:
+      meta-arm:
+      meta-arm-toolchain:
+
+
+  meta-openembedded:
+    url: https://github.com/openembedded/meta-openembedded.git
+    refspec: kirkstone
+    layers:
+      meta-oe:
+      meta-python:
+      meta-networking:
+      meta-perl:
+
+bblayers_conf_header:
+  standard: |
+    POKY_BBLAYERS_CONF_VERSION = "2"
+    BBPATH = "${TOPDIR}"
+    BBFILES ?= ""
+local_conf_header:
+  standard: |
+    CONF_VERSION = "2"
+    PATCHRESOLVE = "noop"
+    PACKAGE_CLASSES = "package_rpm"
+    USER_CLASSES = "buildstats"
+    PREMIRRORS:prepend = "\
+    https://.*/.* https://gitlab.freedesktop.org/pkg-config/pkg-config.git \n"
+  debug-tweaks: |
+    EXTRA_IMAGE_FEATURES = "debug-tweaks"
+  lafon-opt: |  
+    VAR_BRANCH = "master"
+    VAR_BRANCH_BDD = "main"
+    VAR_BRANCH_WEB = "main"
+    VAR_BRANCH_LANG = "main"
+    VAR_BRANCH_IMG = "main"
+    VAR_BRANCH_JNRL = "main"
+    IMAGE_EASY_NAME = "easyborn-lafon-master"
+    SSTATE_DIR ?= "${TOPDIR}/sstate-cache"
+    PACKAGECONFIGC:append:pn-qemu-system-native = " sdl"
+    PACKAGE_CLASSES ?= "package_rpm"
+  diskmon: |
+    BB_DISKMON_DIRS = "\
+        STOPTASKS,${TMPDIR},1G,100K \
+        STOPTASKS,${DL_DIR},1G,100K \
+        STOPTASKS,${SSTATE_DIR},1G,100K \
+        STOPTASKS,/tmp,100M,100K \
+        ABORT,${TMPDIR},100M,1K \
+        ABORT,${DL_DIR},100M,1K \
+        ABORT,${SSTATE_DIR},100M,1K \
+        ABORT,/tmp,10M,1K"
+
