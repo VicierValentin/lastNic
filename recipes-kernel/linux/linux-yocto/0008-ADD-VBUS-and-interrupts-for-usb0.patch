@@ -1,0 +1,25 @@
+From 5e04f4dabcc9bcabc952ca3ef8e3e3d56cb7ef2a Mon Sep 17 00:00:00 2001
+From: cdemenou <charles.demenou@madic.com>
+Date: Tue, 28 Jan 2025 12:03:25 +0100
+Subject: [PATCH] ADD: VBUS and interrupts for usb0
+
+---
+ arch/arm/boot/dts/am335x-bone-common.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm/boot/dts/am335x-bone-common.dtsi b/arch/arm/boot/dts/am335x-bone-common.dtsi
+index 7f872569a4ec..7ab0144e5b58 100644
+--- a/arch/arm/boot/dts/am335x-bone-common.dtsi
++++ b/arch/arm/boot/dts/am335x-bone-common.dtsi
+@@ -220,6 +220,8 @@ &uart4 {
+ 
+ &usb0 {
+ 	dr_mode = "host";
++	interrupts-extended = <&intc 18 &tps 0>;
++	interrupt-names = "mc", "vbus";
+ };
+ 
+ &usb1 {
+-- 
+2.34.1
+

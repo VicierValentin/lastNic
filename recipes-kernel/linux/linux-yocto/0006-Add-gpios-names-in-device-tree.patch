@@ -1,0 +1,56 @@
+From 7096ad0606d24f1170a53e10758bcb6c50eb6a3f Mon Sep 17 00:00:00 2001
+From: cdemenou <charles.demenou@madic.com>
+Date: Wed, 22 Jan 2025 13:53:13 +0100
+Subject: [PATCH] Add-gpios-names-in-device-tree
+
+---
+ arch/arm/boot/dts/am335x-boneblack.dts | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm/boot/dts/am335x-boneblack.dts b/arch/arm/boot/dts/am335x-boneblack.dts
+index ab5763a5afa1..65b8902fc3f2 100644
+--- a/arch/arm/boot/dts/am335x-boneblack.dts
++++ b/arch/arm/boot/dts/am335x-boneblack.dts
+@@ -115,14 +115,14 @@ &gpio0 {
+ 		"P9_20 [i2c2_sda]",
+ 		"P9_19 [i2c2_scl]",
+ 		"P9_26 [uart1_rxd]",
+-		"P9_24 [uart1_txd]",
++		"reset_tactile",
+ 		"[rmii1_txd3]",
+ 		"[rmii1_txd2]",
+ 		"[usb0_drvvbus]",
+ 		"[hdmi cec]",
+ 		"P9_41B",
+ 		"[rmii1_txd1]",
+-		"P8_19 [ehrpwm2a]",
++		"backlight",
+ 		"P8_13 [ehrpwm2b]",
+ 		"NC",
+ 		"NC",
+@@ -152,10 +152,10 @@ &gpio1 {
+ 		"P8_11",
+ 		"P8_16",
+ 		"P8_15",
+-		"P9_15A",
+-		"P9_23",
++		"config_btn",
++		"interrupteur_mid",
+ 		"P9_14 [ehrpwm1a]",
+-		"P9_16 [ehrpwm1b]",
++		"rs485_de",
+ 		"[emmc rst]",
+ 		"[usr0 led]",
+ 		"[usr1 led]",
+@@ -174,8 +174,8 @@ &gpio2 {
+ 	gpio-line-names =
+ 		"P9_15B",
+ 		"P8_18",
+-		"P8_7",
+-		"P8_8",
++		"resistance116",
++		"resistance117",
+ 		"P8_10",
+ 		"P8_9",
+ 		"P8_45 [hdmi]",
+

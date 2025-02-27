@@ -1,0 +1,32 @@
+From bf547f068fe59f5fa05170b9cdfdeea90a35dacf Mon Sep 17 00:00:00 2001
+From: cdemenou <charles.demenou@madic.com>
+Date: Tue, 28 Jan 2025 10:53:40 +0100
+Subject: [PATCH] =?UTF-8?q?MODIF:=20Passe=20usb0=20de=20p=C3=A9riph=C3=A9r?=
+ =?UTF-8?q?ique=20=C3=A0=20H=C3=B4te=20pour=20le=20pilotage=20du=20U60=20e?=
+ =?UTF-8?q?chelon?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ arch/arm/boot/dts/am335x-bone-common.dtsi | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/arch/arm/boot/dts/am335x-bone-common.dtsi b/arch/arm/boot/dts/am335x-bone-common.dtsi
+index 73d9809247e7..7f872569a4ec 100644
+--- a/arch/arm/boot/dts/am335x-bone-common.dtsi
++++ b/arch/arm/boot/dts/am335x-bone-common.dtsi
+@@ -219,9 +219,7 @@ &uart4 {
+ };
+ 
+ &usb0 {
+-	dr_mode = "peripheral";
+-	interrupts-extended = <&intc 18 &tps 0>;
+-	interrupt-names = "mc", "vbus";
++	dr_mode = "host";
+ };
+ 
+ &usb1 {
+-- 
+2.34.1
+
