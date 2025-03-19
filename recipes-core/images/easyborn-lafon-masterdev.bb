@@ -36,7 +36,6 @@ IMAGE_INSTALL:append = " \
 	bmap-tools \
 "
 
-
 # node modules and so on
 
 # Lafon
@@ -59,6 +58,7 @@ IMAGE_INSTALL:append = " \
 	lonifd-daemon \
 	bmap-tools \
 "
+#TOOLCHAIN_TARGET_TASK:append = " gestion_bdd-staticdev lib-lon-staticdev"
 
 # Kernel
 IMAGE_INSTALL:append = " \

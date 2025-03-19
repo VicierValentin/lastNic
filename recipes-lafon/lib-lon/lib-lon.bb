@@ -19,16 +19,16 @@ SRCREV = "${AUTOREV}"
 inherit cmake pkgconfig
 
 DEPENDS += "systemd"
-EXTRA_OECMAKE = ""
 
 PV = "1.0+git${SRCPV}"
 PR = "r0"
 
 PROVIDES += " lib-lon"
 
-DEPENDS:append = ""
-FILES:${PN} += "\
+FILES:${PN}-dev += "\
 	usr/include/ \
 	usr/lib/ \
 "
 
+ALLOW_EMPTY:${PN} = "1"
+TOOLCHAIN_TARGET_TASK:append = " lib-lon-staticdev"
