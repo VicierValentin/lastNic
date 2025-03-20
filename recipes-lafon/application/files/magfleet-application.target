@@ -1,6 +1,6 @@
 [Unit]
 Description= all Magfleet applications
-Wants= magfleet-app.service magfleet-ihm.service magfleet-ctrl.service lon.service magfleet-jnrl.service
+Wants= magfleet-app.service magfleet-ihm.service magfleet-ctrl.service lon.service magfleet-jrnl.service
 
 [Install]
 WantedBy=multi-user.target
