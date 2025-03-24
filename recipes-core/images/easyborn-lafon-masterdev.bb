@@ -34,6 +34,7 @@ IMAGE_INSTALL:append = " \
 	libgpiod-dev \
 	libgpiod-tools \
 	bmap-tools \
+	dlt-daemon \
 "
 
 # node modules and so on
