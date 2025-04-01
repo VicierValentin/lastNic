@@ -35,6 +35,7 @@ IMAGE_INSTALL:append = " \
 	libgpiod-tools \
 	bmap-tools \
 	nmap \
+	dlt-daemon \
 "
 
 

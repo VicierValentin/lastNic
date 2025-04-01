@@ -70,8 +70,8 @@ local_conf_header:
   debug-tweaks: |
     EXTRA_IMAGE_FEATURES = "debug-tweaks"
   lafon-opt: |  
-    VAR_BRANCH = "master-dev"
-    VAR_BRANCH_BDD = "main-dev"
+    VAR_BRANCH = "mid"
+    VAR_BRANCH_BDD = "mid"
     VAR_BRANCH_WEB = "main-dev"
     VAR_BRANCH_LANG = "main-dev"
     VAR_BRANCH_IMG = "main-dev"

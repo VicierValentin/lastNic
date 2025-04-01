@@ -1,0 +1,14 @@
+[Unit]
+Description=MagFleet Journal application
+After=magfleet-app.service
+PartOf=magfleet-mid.target
+
+[Service]
+Type=notify
+ExecStart=/root/easy/EB_Jrnl
+Restart=always
+RestartSec=500ms
+
+[Install]
+WantedBy=magfleet-mid.target
+Alias=jrnl.service

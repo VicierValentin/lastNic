@@ -15,7 +15,7 @@ LIC_FILES_CHKSUM = ""
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 inherit systemd
 
-SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/main.git;protocol=ssh;branch=${VAR_BRANCH}"
+SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/main.git;protocol=ssh;branch=master"
 SRC_URI += "file://magfleet-app.service"
 SRC_URI += "file://magfleet-ihm.service"
 SRC_URI += "file://magfleet-ctrl.service"
