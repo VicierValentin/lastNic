@@ -13,6 +13,8 @@ do_configure:prepend() {
         install -Dm 0644 ${WORKDIR}/lv_conf.h ${S}/lv_conf.h
 }
 
+TOOLCHAIN_TARGET_TASK:append = " lvgl-dev"
+
 PROVIDES += " lvgl"
 
 DEPENDS:append = ""

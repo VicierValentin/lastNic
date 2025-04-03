@@ -36,6 +36,7 @@ IMAGE_INSTALL:append = " \
 	bmap-tools \
 	nmap \
 	dlt-daemon \
+	dlt-daemon-systemd \
 "
 
 

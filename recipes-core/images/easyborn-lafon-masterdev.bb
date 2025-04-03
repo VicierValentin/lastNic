@@ -35,6 +35,9 @@ IMAGE_INSTALL:append = " \
 	libgpiod-tools \
 	bmap-tools \
 	dlt-daemon \
+	dlt-daemon-systemd \
+	openssl \
+	libcrypto \
 "
 
 # node modules and so on
