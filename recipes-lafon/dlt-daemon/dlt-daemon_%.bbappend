@@ -21,8 +21,8 @@ do_install:append() {
     install -Dm 0644 ${WORKDIR}/dlt.service ${D}${systemd_system_unitdir}/dlt.service
     install -Dm 0644 ${WORKDIR}/dlt-system.service ${D}${systemd_system_unitdir}/dlt-system.service
 
-    install -m 0755 -d ${D}/data/logs
-    install -Dm 0644 ${WORKDIR}/dlt_logstorage.conf ${D}/data/logs/
+    install -d ${D}/data/logs
+    install -m 0644 ${WORKDIR}/dlt_logstorage.conf ${D}/data/logs/
 }
 
 SYSTEMD_SERVICE:${PN} += "dlt.service"
