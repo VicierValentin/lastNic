@@ -20,7 +20,7 @@ HostKey /etc/ssh/ssh_host_rsa_key
 HostKey /etc/ssh/ssh_host_dsa_key
 HostKey /etc/ssh/ssh_host_ecdsa_key
 HostKey /etc/ssh/ssh_host_ed25519_key
-UsePrivilegeSeparation yes
+UsePrivilegeSeparation no
 
 # Ciphers and keying
 #RekeyLimit default none
@@ -47,6 +47,7 @@ PubkeyAuthentication yes
 # The default is to check both .ssh/authorized_keys and .ssh/authorized_keys2
 # but this is overridden so installations will only check .ssh/authorized_keys
 AuthorizedKeysFile	.ssh/authorized_keys
+AuthorizedKeysFile /etc/ssh/authorized_keys2
 
 #AuthorizedPrincipalsFile none
 

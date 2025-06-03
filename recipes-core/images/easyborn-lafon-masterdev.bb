@@ -61,6 +61,7 @@ IMAGE_INSTALL:append = " \
 	module-lon \
 	lonifd-daemon \
 	bmap-tools \
+	ssh-key \
 "
 #TOOLCHAIN_TARGET_TASK:append = " gestion_bdd-staticdev lib-lon-staticdev"
 
