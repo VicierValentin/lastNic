@@ -1,6 +1,6 @@
 [Unit]
 Description=MagFleet IHM application
-After=magfleet-app.service
+After=magfleet-sha256.service
 PartOf=magfleet-application.target
 
 [Service]

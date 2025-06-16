@@ -1,6 +1,6 @@
 [Unit]
 Description=MagFleet Journal application
-After=magfleet-app.service
+After=magfleet-sha256.service
 PartOf=magfleet-mid.target
 
 [Service]

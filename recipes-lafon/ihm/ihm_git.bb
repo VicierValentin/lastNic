@@ -27,18 +27,43 @@ PR = "r0"
 
 # NOTE: no Makefile found, unable to determine what needs to be done
 
-DEPENDS:append= "sqlite3 lib-log gestion-bdd systemd lvgl lv-drivers czmq libgpiod lib-lon" 
+DEPENDS:append= "sqlite3 lib-log gestion-bdd systemd lvgl lv-drivers czmq libgpiod lib-lon private-key sha256 openssl-native" 
 
-#do_compile () {
-#	cd src
-#	oe_runmake yocto
-#}
 
-do_install () {
+do_compile:prepend() {
+    cp ${STAGING_DATADIR}/private-key/private_key.pem ${WORKDIR}/build
+}
+
+do_install:prepend () {
 	# Specify install commands here
 	install -m 0755 -d ${D}/root/easy
+	install -m 0755 -d ${D}/usr/appid/shas/yocto
+	install -m 0755 -d ${D}/usr/appid/sigs/
+
 	install -m 0755 ./ihm ${D}/root/easy/EB_Ihm
+	install -m 0755 ./ihm.sig ${D}/usr/appid/sigs/EB_Ihm
+}
+
+do_install() {
+	sha256sum ${D}/root/easy/EB_Ihm | awk '{print $1}' > ./EB_Ihm.sha256
+
+	# Sign EB_Ihm.sha256
+	openssl dgst -sha256 -sign ${STAGING_DATADIR}/private-key/private_key.pem -out ./EB_Ihm.sha256.sig ./EB_Ihm.sha256
+
+	install -m 0755 EB_Ihm.sha256 ${D}/usr/appid/shas/yocto/EB_Ihm
+	install -m 0755 EB_Ihm.sha256.sig ${D}/usr/appid/sigs/EB_Ihm.sha256.sig
 }
 
 #INSANE_SKIP:${PN} = "ldflags"
-FILES:${PN} = "/root/easy"
+INSANE_SKIP:${PN} += "ldflags already-stripped"
+INHIBIT_PACKAGE_STRIP = "1"
+INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
+
+FILES:${PN} = "/root/easy \
+	/usr/appid/ \
+	/usr/appid/shas/ \
+	/usr/appid/shas/yocto/ \
+	/usr/appid/shas/yocto/EB_Ihm \
+	/usr/appid/shas/yocto/EB_Ihm.sha256 \
+	/usr/appid/sigs/EB_Ihm.sha256.sig \
+	/usr/appid/sigs/EB_Ihm"

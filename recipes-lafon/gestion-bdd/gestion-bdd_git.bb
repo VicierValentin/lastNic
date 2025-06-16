@@ -18,7 +18,8 @@ S = "${WORKDIR}/git"
 SRCREV = "${AUTOREV}"
 inherit cmake pkgconfig
 
-DEPENDS = "sqlite3 lib-log"
+DEPENDS = "sqlite3 lib-log sha256"
+# 
 
 PV = "1.0+git${SRCPV}"
 PR = "r0"
