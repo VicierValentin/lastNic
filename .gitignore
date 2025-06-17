@@ -1,3 +1,6 @@
-kas-files/build/sstate-cache/
-kas-files/build/downloads/
-kas-files/build/cache/
+kas-files/build/sstate-cache/**/
+kas-files/build/sstate-cache/*
+kas-files/build/downloads/**/
+kas-files/build/downloads/*
+kas-files/build/cache/**/
+kas-files/build/cache/*
