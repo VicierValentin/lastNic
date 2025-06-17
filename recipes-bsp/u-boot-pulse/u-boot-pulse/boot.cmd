@@ -1,0 +1,2 @@
+setenv bootargs console=ttyS0,115200n8 quiet root=/dev/mmcblk0p2 rw rootfstype=ext4 rootwait;
+if test -e mmc 0:2 /boot/fitImage; then echo "Loading kernel from SD card..." ;load mmc 0:2 82000000 /boot/fitImage ; bootm 82000000; else echo "Failed to load kernel from SD card."; if test -e mmc 1:2 /boot/fitImage; then; echo "Loading kernel from eMMC..."; setenv bootargs console=ttyS0,115200n8 quiet root=/dev/mmcblk1p2 rw rootfstype=ext4 rootwait; load mmc 1:2 82000000 /boot/fitImage; bootm 82000000; else; echo "Failed to load kernel from eMMC.";fi;fi;
