@@ -4,3 +4,5 @@ kas-files/build/downloads/**/
 kas-files/build/downloads/*
 kas-files/build/cache/**/
 kas-files/build/cache/*
+kas-files/build/tmp/**/
+kas-files/build/tmp/*
