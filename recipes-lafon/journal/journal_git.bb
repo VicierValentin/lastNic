@@ -32,18 +32,32 @@ do_compile:prepend() {
     cp ${STAGING_DATADIR}/private-key/private_key.pem ${WORKDIR}/build
 }
 
-do_install () {
+do_install:prepend() {
 	# Specify install commands here
 	install -m 0755 -d ${D}/root/easy
 	install -m 0755 -d ${D}/usr/appid/shas/yocto
 	install -m 0755 -d ${D}/usr/appid/sigs/
 
 	install -m 0755 ./journal ${D}/root/easy/EB_Jrnl
-	install -m 0755 ./journal.sha256 ${D}/usr/appid/shas/yocto/EB_Jrnl
-	install -m 0755 ./journal.sig ${D}/usr/appid/sigs/EB_Jrnl
+	#install -m 0755 ./journal.sig ${D}/usr/appid/sigs/EB_Jrnl
+}
+
+do_install() {
+	sha256sum ${D}/root/easy/EB_Jrnl | awk '{print $1}' > ./EB_Jrnl.sha256
+
+	# Sign EB_Jrnl.sha256
+	openssl dgst -sha256 -sign ${STAGING_DATADIR}/private-key/private_key.pem -out ./EB_Jrnl.sha256.sig ./EB_Jrnl.sha256
+
+	install -m 0755 EB_Jrnl.sha256 ${D}/usr/appid/shas/yocto/EB_Jrnl
+	install -m 0755 EB_Jrnl.sha256.sig ${D}/usr/appid/sigs/EB_Jrnl
 }
 
 PROVIDES += " journal"
+
+INSANE_SKIP:${PN} += "ldflags already-stripped"
+INHIBIT_PACKAGE_STRIP = "1"
+INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
+
 
 #INSANE_SKIP:${PN} = "ldflags"
 FILES:${PN} = "/root/easy \
@@ -51,4 +65,5 @@ FILES:${PN} = "/root/easy \
 	/usr/appid/shas/ \
 	/usr/appid/shas/yocto/ \
 	/usr/appid/shas/yocto/EB_Jrnl \
-	/usr/appid/sigs/EB_Jrnl"
+	/usr/appid/sigs/EB_Jrnl \
+	/usr/appid/sigs/EB_Jrnl.sha256.sig"

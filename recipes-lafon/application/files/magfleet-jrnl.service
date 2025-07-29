@@ -1,10 +1,10 @@
 [Unit]
 Description=MagFleet Journal application
-After=magfleet-sha256.service
 PartOf=magfleet-mid.target
 
 [Service]
 Type=notify
+ExecStartPre=/usr/appid/verify.sh
 ExecStart=/root/easy/EB_Jrnl
 Restart=always
 RestartSec=500ms

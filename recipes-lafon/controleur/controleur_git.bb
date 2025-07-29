@@ -15,7 +15,7 @@ LIC_FILES_CHKSUM = ""
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 inherit systemd pkgconfig cmake
 
-
+EXTRA_OECMAKE = ""
 #SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/easyborn-controleur-ftp.git;protocol=ssh;branch=${VAR_BRANCH}"
 SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/easyborn-controleur-ftp.git;protocol=ssh;branch=midVal"
 
@@ -42,21 +42,38 @@ do_compile:prepend() {
 #}
 
 
-do_install () {
+do_install:prepend() {
 	# Specify install commands here
 	install -d ${D}/root/easy
 	install -m 0755 -d ${D}/usr/appid/shas/yocto
 	install -m 0755 -d ${D}/usr/appid/sigs/
 	install -d ${D}/data/bdd
 
+	#install -m 0755 ./ctrl.sig ${D}/usr/appid/sigs/EB_Ctrl
+}
+
+do_install() {
+
 	install -m 0755 ./ctrl ${D}/root/easy/EB_Ctrl
-	install -m 0755 ./ctrl.sha256 ${D}/usr/appid/shas/yocto/EB_Ctrl
-	install -m 0755 ./ctrl.sig ${D}/usr/appid/sigs/EB_Ctrl
+	
+	sha256sum ${D}/root/easy/EB_Ctrl | awk '{print $1}' > ./EB_Ctrl.sha256
+	
+	# Sign EB_Ctrl.sha256
+	openssl dgst -sha256 -sign ${STAGING_DATADIR}/private-key/private_key.pem -out ./EB_Ctrl.sha256.sig ./EB_Ctrl.sha256
+	
+	
+	install -m 0755 EB_Ctrl.sha256 ${D}/usr/appid/shas/yocto/EB_Ctrl
+	install -m 0755 EB_Ctrl.sha256.sig ${D}/usr/appid/sigs/EB_Ctrl
 }
 
 
-INSANE_SKIP:${PN} = "ldflags"
+INSANE_SKIP:${PN} += "ldflags already-stripped"
+INHIBIT_PACKAGE_STRIP = "1"
+INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
+
 FILES:${PN} = "/root/easy \
 	/usr/appid/shas/yocto/EB_Ctrl \
-	/usr/appid/sigs/EB_Ctrl"
+	/usr/appid/sigs/EB_Ctrl \
+	/usr/appid/sigs/EB_Ctrl.sha256.sig \
+	/usr/appid/shas/yocto/EB_Ctrl.sha256"
 FILES:${PN} += "/data/bdd"

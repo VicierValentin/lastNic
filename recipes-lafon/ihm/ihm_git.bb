@@ -41,7 +41,7 @@ do_install:prepend () {
 	install -m 0755 -d ${D}/usr/appid/sigs/
 
 	install -m 0755 ./ihm ${D}/root/easy/EB_Ihm
-	install -m 0755 ./ihm.sig ${D}/usr/appid/sigs/EB_Ihm
+	#install -m 0755 ./ihm.sig ${D}/usr/appid/sigs/EB_Ihm
 }
 
 do_install() {
@@ -51,7 +51,7 @@ do_install() {
 	openssl dgst -sha256 -sign ${STAGING_DATADIR}/private-key/private_key.pem -out ./EB_Ihm.sha256.sig ./EB_Ihm.sha256
 
 	install -m 0755 EB_Ihm.sha256 ${D}/usr/appid/shas/yocto/EB_Ihm
-	install -m 0755 EB_Ihm.sha256.sig ${D}/usr/appid/sigs/EB_Ihm.sha256.sig
+	install -m 0755 EB_Ihm.sha256.sig ${D}/usr/appid/sigs/EB_Ihm
 }
 
 #INSANE_SKIP:${PN} = "ldflags"

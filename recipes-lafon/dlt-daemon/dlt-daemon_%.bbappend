@@ -6,6 +6,8 @@ SRC_URI:append = " \
     file://dlt-system.conf \
     file://dlt-system.service \
     file://dlt.service \
+    file://dlt_logstorage.conf \
+    file://setlogstorage.sh \
     file://dlt.conf \
 "
 
@@ -23,6 +25,7 @@ do_install:append() {
 
     install -d ${D}/data/logs
     install -m 0644 ${WORKDIR}/dlt_logstorage.conf ${D}/data/logs/
+    install -m 0644 ${WORKDIR}/setlogstorage.sh ${D}/usr/bin/
 }
 
 SYSTEMD_SERVICE:${PN} += "dlt.service"

@@ -20,7 +20,7 @@ SRC_URI += "file://magfleet-app.service"
 SRC_URI += "file://magfleet-ihm.service"
 SRC_URI += "file://magfleet-ctrl.service"
 SRC_URI += "file://magfleet-jrnl.service"
-SRC_URI += "file://magfleet-sha256.service"
+#SRC_URI += "file://magfleet-sha256.service"
 SRC_URI += "file://lon.service"
 SRC_URI += "file://magfleet-application.target"
 SRC_URI += "file://magfleet-mid.target"
@@ -64,7 +64,7 @@ do_install () {
 	install -m 644 ${WORKDIR}/magfleet-ihm.service ${D}/${systemd_unitdir}/system
 	install -m 644 ${WORKDIR}/magfleet-ctrl.service ${D}/${systemd_unitdir}/system
 	install -m 644 ${WORKDIR}/magfleet-jrnl.service ${D}/${systemd_unitdir}/system
-	install -m 644 ${WORKDIR}/magfleet-sha256.service ${D}/${systemd_unitdir}/system
+	#install -m 644 ${WORKDIR}/magfleet-sha256.service ${D}/${systemd_unitdir}/system
 	install -d ${D}/data
 	install -m 0644 ${WORKDIR}/public.pem ${D}/data/public.pem
 #	install -m 644 ${WORKDIR}/tty-no-cursor-blink.service ${D}/${systemd_unitdir}/system	
@@ -80,6 +80,7 @@ SYSTEMD_SERVICE:${PN} += "magfleet-ihm.service"
 SYSTEMD_SERVICE:${PN} += "magfleet-ctrl.service"
 SYSTEMD_SERVICE:${PN} += "magfleet-mid.target"
 SYSTEMD_SERVICE:${PN} += "magfleet-jrnl.service"
+#SYSTEMD_SERVICE:${PN} += "magfleet-sha256.service"
 SYSTEMD_SERVICE:${PN} += "lon.service"
 INSANE_SKIP:${PN} = "ldflags"
 FILES:${PN} = "/root/easy \

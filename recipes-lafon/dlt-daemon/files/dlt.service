@@ -25,6 +25,7 @@ Type=simple
 Restart=always
 RestartSec=500ms
 ExecStart=/usr/bin/dlt-daemon
+ExecStartPost=/usr/bin/setlogstorage.sh
 StandardOutput=null
 
 [Install]

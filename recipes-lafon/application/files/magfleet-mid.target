@@ -1,6 +1,6 @@
 [Unit]
 Description= Magfleet MID applications
-Wants= lon.service magfleet-jrnl.service
+Wants= magfleet-jrnl.service lon.service 
 
 [Install]
 WantedBy=multi-user.target
