@@ -19,3 +19,7 @@ SRC_URI += "file://0004-New-magfleet-devicetree-with-new-linux-kernel.patch"
 SRC_URI += "file://0005-Enable-uart2.patch"
 SRC_URI += "file://0006-Modif-usb0-de-peripherique-a-hote.patch"
 SRC_URI += "file://0007-Ajout-des-broches-pour-l-interrupteur-mid-et-les-bro.patch"
+SRC_URI += "file://0009-Ajout-noms-broches-pour-utiliser-libgpiod.patch"
+SRC_URI += "file://0010-Changement-nom-broche-P8-16.patch"
+#SRC_URI += "file://0011-Changement-host-vers-otg.patch"
+
