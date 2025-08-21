@@ -9,4 +9,5 @@ tmpfs                /run                 tmpfs      mode=0755,nodev,nosuid,stri
 tmpfs                /var/volatile        tmpfs      defaults              0  0
 LABEL=data           /data                ext4       defaults,x-systemd.growfs              0  2
 LABEL=boot			 /boot				  vfat	     defaults			   0  2
+LABEL=transac        /transac             ext4       defaults,x-systemd.growfs              0  2
 

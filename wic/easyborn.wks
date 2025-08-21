@@ -1,6 +1,7 @@
 part /boot --source bootimg-partition --ondisk mmcblk --fstype=vfat --label boot --active --align 4 --size 100M --sourceparams="loader=u-boot" --use-uuid
 part / --source rootfs --ondisk mmcblk --fstype=ext4 --label rootfs_A --align 4 --use-uuid 
 part / --source rootfs --ondisk mmcblk --fstype=ext4 --label rootfs_B --align 4 --use-uuid 
-part /data --ondisk mmcblk --source rootfs --rootfs-dir=${IMAGE_ROOTFS}/data --fstype=ext4 --label data --size 128M --align 8192 --extra-space 0
+part /transac --ondisk mmcblk --fstype=ext4 --label transac --size 1G  --align 1024
+part /data --ondisk mmcblk --source rootfs --rootfs-dir=${IMAGE_ROOTFS}/data --fstype=ext4 --label data --size 512M --align 8192 --extra-space 0
 
 bootloader --append="console=ttyS0,115200 rw"
