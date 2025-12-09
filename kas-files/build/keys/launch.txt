@@ -1,0 +1,19 @@
+setenv bootargs console=ttyS0,115200n8 quiet root=/dev/mmcblk1p2 rw rootfstype=ext4 rootwait
+load mmc 1:2 82000000 /boot/fitImage
+bootm 82000000
+
+
+
+setenv bootargs console=ttyS0,115200n8 quiet root=/dev/mmcblk0p2 ro rootfstype=ext4 rootwait
+load mmc 0:2 82000000 /boot/fitImage
+iminfo
+bootm 82000000
+
+
+sudo dd if=./u-boot/MLO of=/dev/mmcblk1 count=1 seek=1 bs=128k
+sudo dd if=./u-boot/u-boot.img of=/dev/mmcblk1 count=2 seek=1 bs=384k
+
+[2023-12-24;10:51:25] [util.c: l.73] [SHA verification failed: 8fbc5b4eaa2383c5ebe9565750eaab3b4f5ce227c7ae0541975ec9e768a0a1b1 != 8fbc5b4eaa2383c5ebe9565750eaab3b4f5ce227c7ae0541975ec9e768a0a1b0]
+
+
+[2023-12-24;10:51:25] [util.c: l.73] [SHA verification failed: 2f9b05a40fecda897414a0b12b163452430f796a132974fa4260dd6d369ff56d != d2f2fff22350d62e8867bca84722a566ec27e9444f42cc70ea6a63bbd5ea2641]

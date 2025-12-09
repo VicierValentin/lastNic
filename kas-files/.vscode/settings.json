@@ -1,0 +1,37 @@
+{
+    "python.autoComplete.extraPaths": [
+        "${workspaceFolder}/kas-files/poky/bitbake/lib",
+        "${workspaceFolder}/kas-files/poky/meta/lib",
+    ],
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/kas-files/poky/bitbake/lib",
+        "${workspaceFolder}/kas-files/poky/meta/lib"
+    ],
+    "files.associations": {
+        "*.conf": "bitbake",
+        "*.inc": "bitbake"
+    },
+    "git.ignoreLimitWarning": true,
+    "bitbake.buildConfigurations": [
+
+        {
+            "name": "BeagleBone lafon",
+            "pathToBuildFolder": "${workspaceFolder}/kas-files/build"
+        }
+    ],
+    "files.watcherExclude": {
+    "kas-files//build": true
+    },
+    "search.exclude": {
+        "kas-files/build": true
+    },
+    "C_Cpp.files.exclude": {
+        "kas-files/build": true
+    },
+    "python.analysis.exclude": [
+        "kas-files/build"
+    ],
+    "git.repositoryScanIgnoredFolders": [
+        "kas-files/build"
+    ]
+}
