@@ -63,6 +63,8 @@ IMAGE_INSTALL:append = " \
 	bmap-tools \
 	ssh-key \
 	journal \
+	pde \
+	ifsf-controleur \
 	sha256 \
 "
 #TOOLCHAIN_TARGET_TASK:append = " gestion_bdd-staticdev lib-lon-staticdev"

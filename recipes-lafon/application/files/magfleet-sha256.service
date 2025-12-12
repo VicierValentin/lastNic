@@ -1,11 +1,11 @@
 [Unit]
-Description=MagFleet IHM application
+Description=MagFleet signature application
 After=magfleet-app.service
-PartOf=magfleet-application.target
+PartOf=magfleet-mid.target
 
 [Service]
 ExecStart=/usr/appid/verify.sh
 
 [Install]
-WantedBy=magfleet-application.target
+WantedBy=magfleet-mid.target
 Alias=sha256.service
