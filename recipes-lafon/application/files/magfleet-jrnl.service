@@ -1,0 +1,14 @@
+[Unit]
+Description=MagFleet Journal application
+PartOf=magfleet-mid.target
+
+[Service]
+Type=notify
+ExecStartPre=/usr/appid/verify.sh
+ExecStart=/root/easy/EB_Jrnl
+Restart=always
+RestartSec=500ms
+
+[Install]
+WantedBy=magfleet-mid.target
+Alias=jrnl.service

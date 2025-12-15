@@ -34,6 +34,10 @@ IMAGE_INSTALL:append = " \
 	libgpiod-dev \
 	libgpiod-tools \
 	bmap-tools \
+	dlt-daemon \
+	dlt-daemon-systemd \
+	openssl \
+	libcrypto \
 "
 
 # node modules and so on
@@ -57,6 +61,11 @@ IMAGE_INSTALL:append = " \
 	module-lon \
 	lonifd-daemon \
 	bmap-tools \
+	ssh-key \
+	journal \
+	pde \
+	ifsf-controleur \
+	sha256 \
 "
 #TOOLCHAIN_TARGET_TASK:append = " gestion_bdd-staticdev lib-lon-staticdev"
 

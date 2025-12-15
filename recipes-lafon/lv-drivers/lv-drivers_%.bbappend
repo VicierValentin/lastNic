@@ -15,6 +15,8 @@ do_configure:prepend() {
     install -Dm 0644 ${WORKDIR}/lv_drivers.pc.in ${S}/lv_drivers.pc.in
 }
 
+TOOLCHAIN_TARGET_TASK:append = " lv-drivers-dev"
+
 DEPENDS = "lvgl"
 
 EXTRA_OECMAKE = ""

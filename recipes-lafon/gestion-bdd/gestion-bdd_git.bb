@@ -13,12 +13,12 @@ LICENSE = "CLOSED"
 LIC_FILES_CHKSUM = ""
 
 FILESEXTRAPATHS:prepend := "${THISDIR}:"
-SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/gestion_bdd.git;protocol=ssh;branch=${VAR_BRANCH_BDD}"
+SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/gestion_bdd.git;protocol=ssh;branch=${VAR_BRANCH}"
 S = "${WORKDIR}/git"
 SRCREV = "${AUTOREV}"
 inherit cmake pkgconfig
 
-DEPENDS = "sqlite3 lib-log libgpiod"
+DEPENDS = "sqlite3 lib-log libgpiod sha256"
 
 PV = "1.0+git${SRCPV}"
 PR = "r0"

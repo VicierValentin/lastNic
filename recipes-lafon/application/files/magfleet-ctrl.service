@@ -5,6 +5,7 @@ PartOf=magfleet-application.target
 
 [Service]
 Type=notify
+ExecStartPre=/usr/appid/verify.sh
 ExecStart=/root/easy/EB_Ctrl
 Restart=always
 RestartSec=500ms

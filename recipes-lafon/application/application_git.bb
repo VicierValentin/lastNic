@@ -15,11 +15,12 @@ LIC_FILES_CHKSUM = ""
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 inherit systemd
 
-SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/main.git;protocol=ssh;branch=${VAR_BRANCH}"
+SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/main.git;protocol=ssh;branch=master"
 SRC_URI += "file://magfleet-app.service"
 SRC_URI += "file://magfleet-ihm.service"
 SRC_URI += "file://magfleet-ctrl.service"
 SRC_URI += "file://magfleet-jrnl.service"
+#SRC_URI += "file://magfleet-sha256.service"
 SRC_URI += "file://lon.service"
 SRC_URI += "file://magfleet-application.target"
 SRC_URI += "file://magfleet-mid.target"
@@ -29,6 +30,9 @@ SRC_URI += "file://tty-no-cursor-blink.service"
 SRC_URI += "file://no-cursor-blink.sh"
 SRC_URI += "file://public.pem"
 SRC_URI += "file://script_check_sd_card"
+SRC_URI += "file://magfleet-ifsf.service"
+SRC_URI += "file://magfleet-pde.service"
+SRC_URI += "file://magfleet-sha256.service"
 
 
 # Modify these as desired
@@ -63,6 +67,7 @@ do_install () {
 	install -m 644 ${WORKDIR}/magfleet-ihm.service ${D}/${systemd_unitdir}/system
 	install -m 644 ${WORKDIR}/magfleet-ctrl.service ${D}/${systemd_unitdir}/system
 	install -m 644 ${WORKDIR}/magfleet-jrnl.service ${D}/${systemd_unitdir}/system
+	#install -m 644 ${WORKDIR}/magfleet-sha256.service ${D}/${systemd_unitdir}/system
 	install -d ${D}/data
 	install -m 0644 ${WORKDIR}/public.pem ${D}/data/public.pem
 #	install -m 644 ${WORKDIR}/tty-no-cursor-blink.service ${D}/${systemd_unitdir}/system	
@@ -78,6 +83,9 @@ SYSTEMD_SERVICE:${PN} += "magfleet-ihm.service"
 SYSTEMD_SERVICE:${PN} += "magfleet-ctrl.service"
 SYSTEMD_SERVICE:${PN} += "magfleet-mid.target"
 SYSTEMD_SERVICE:${PN} += "magfleet-jrnl.service"
+SYSTEMD_SERVICE:${PN} += "magfleet-ifsf.service"
+SYSTEMD_SERVICE:${PN} += "magfleet-pde.service"
+SYSTEMD_SERVICE:${PN} += "magfleet-sha256.service"
 SYSTEMD_SERVICE:${PN} += "lon.service"
 INSANE_SKIP:${PN} = "ldflags"
 FILES:${PN} = "/root/easy \
