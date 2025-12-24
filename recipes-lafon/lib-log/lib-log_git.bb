@@ -13,7 +13,7 @@ LICENSE = "CLOSED"
 LIC_FILES_CHKSUM = ""
 
 #FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
-SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/lib_log.git;protocol=ssh;branch=${VAR_BRANCH}"
+SRC_URI = "git://github.com/MADIC-industries/lib_log.git;protocol=ssh;branch=${VAR_BRANCH}"
 S = "${WORKDIR}/git"
 SRCREV = "${AUTOREV}"
 inherit systemd cmake pkgconfig

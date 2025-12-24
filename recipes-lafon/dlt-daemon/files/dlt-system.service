@@ -17,6 +17,7 @@
 Description=GENIVI DLT system. Application to forward syslog messages to DLT, transfer system information, logs and files.
 Documentation=man:dlt-system(1) man:dlt-system.conf(5)
 Wants=dlt.service
+PartOf=magfleet-application.target
 
 [Service]
 ExecStart=/usr/bin/dlt-system

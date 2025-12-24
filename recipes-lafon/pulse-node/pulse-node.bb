@@ -21,6 +21,6 @@ do_install:append() {
 }
 FILES:${PN} += "/usr/local/lib/nodejs"
 FILES:${PN} += "/usr/sbin"
-RDEPENDS:${PN} += "bash python3"
+RDEPENDS:${PN} += "bash python3-core"
 INSANE_SKIP:${PN} = " ldflags file-rdeps staticdev already-stripped"
 

@@ -13,7 +13,7 @@ LICENSE = "CLOSED"
 LIC_FILES_CHKSUM = ""
 
 #FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
-SRC_URI = "git@github.com:MADIC-industries/ifsf_controleur.git;protocol=ssh;branch=${VAR_BRANCH}"
+SRC_URI = "git://github.com/MADIC-industries/ifsf_controleur.git;protocol=ssh;branch=${VAR_BRANCH}"
 S = "${WORKDIR}/git"
 SRCREV = "${AUTOREV}"
 inherit systemd pkgconfig cmake
@@ -53,9 +53,7 @@ do_install() {
 
 PROVIDES += " ifsf"
 
-INSANE_SKIP:${PN} += "ldflags already-stripped"
-INHIBIT_PACKAGE_STRIP = "1"
-INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
+INSANE_SKIP:${PN} += "ldflags"
 
 
 #INSANE_SKIP:${PN} = "ldflags"

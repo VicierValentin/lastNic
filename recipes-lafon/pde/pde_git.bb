@@ -13,7 +13,7 @@ LICENSE = "CLOSED"
 LIC_FILES_CHKSUM = ""
 
 #FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
-SRC_URI = "git@github.com:MADIC-industries/pde.git;protocol=ssh;branch=${VAR_BRANCH}"
+SRC_URI = "git://github.com/MADIC-industries/pde.git;protocol=ssh;branch=${VAR_BRANCH}"
 S = "${WORKDIR}/git"
 SRCREV = "${AUTOREV}"
 inherit systemd pkgconfig cmake
@@ -25,7 +25,7 @@ EXTRA_OECMAKE = ""
 PV = "1.0+git${SRCPV}"
 PR = "r0"
 
-DEPENDS:append= "curl sqlite3 lib-log gestion-bdd systemd libgpiod private-key sha256 openssl-native" 
+DEPENDS:append= "curl czmq cppzmq sqlite3 lib-log gestion-bdd systemd libgpiod private-key sha256 openssl-native" 
 do_compile:prepend() {
     cp ${STAGING_DATADIR}/private-key/private_key.pem ${WORKDIR}/build
 }
@@ -53,9 +53,7 @@ do_install() {
 
 PROVIDES += " pde"
 
-INSANE_SKIP:${PN} += "ldflags already-stripped"
-INHIBIT_PACKAGE_STRIP = "1"
-INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
+INSANE_SKIP:${PN} += "ldflags"
 
 
 #INSANE_SKIP:${PN} = "ldflags"

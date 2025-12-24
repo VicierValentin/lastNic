@@ -16,7 +16,7 @@
 LICENSE = "CLOSED"
 LIC_FILES_CHKSUM = ""
 
-SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/webServer_node.git;protocol=ssh;branch=${VAR_BRANCH_WEB}"
+SRC_URI = "git://github.com/MADIC-industries/webServer.git;protocol=ssh;branch=prod"
 
 # Modify these as desired
 PV = "1.0+git${SRCPV}"

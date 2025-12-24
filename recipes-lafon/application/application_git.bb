@@ -13,9 +13,9 @@ LICENSE = "CLOSED"
 LIC_FILES_CHKSUM = ""
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
-inherit systemd
+inherit systemd cmake pkgconfig
 
-SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/main.git;protocol=ssh;branch=master"
+SRC_URI = "git://github.com/MADIC-industries/main.git;protocol=ssh;branch=prod"
 SRC_URI += "file://magfleet-app.service"
 SRC_URI += "file://magfleet-ihm.service"
 SRC_URI += "file://magfleet-ctrl.service"
@@ -46,9 +46,9 @@ PR = "r0"
 
 DEPENDS = "systemd lib-log"
 
-do_compile () {
-	oe_runmake default
-}
+#do_compile () {
+#	oe_runmake default
+#}
 
 do_install () {
 	# Specify install commands here
@@ -67,6 +67,9 @@ do_install () {
 	install -m 644 ${WORKDIR}/magfleet-ihm.service ${D}/${systemd_unitdir}/system
 	install -m 644 ${WORKDIR}/magfleet-ctrl.service ${D}/${systemd_unitdir}/system
 	install -m 644 ${WORKDIR}/magfleet-jrnl.service ${D}/${systemd_unitdir}/system
+	install -m 644 ${WORKDIR}/magfleet-ifsf.service ${D}/${systemd_unitdir}/system
+	install -m 644 ${WORKDIR}/magfleet-pde.service ${D}/${systemd_unitdir}/system
+	install -m 644 ${WORKDIR}/magfleet-sha256.service ${D}/${systemd_unitdir}/system
 	#install -m 644 ${WORKDIR}/magfleet-sha256.service ${D}/${systemd_unitdir}/system
 	install -d ${D}/data
 	install -m 0644 ${WORKDIR}/public.pem ${D}/data/public.pem

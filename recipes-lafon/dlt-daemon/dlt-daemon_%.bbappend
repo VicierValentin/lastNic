@@ -24,12 +24,14 @@ do_install:append() {
     install -Dm 0644 ${WORKDIR}/dlt-system.service ${D}${systemd_system_unitdir}/dlt-system.service
 
     install -d ${D}/data/logs
-    install -m 0644 ${WORKDIR}/dlt_logstorage.conf ${D}/data/logs/
-    install -m 0644 ${WORKDIR}/setlogstorage.sh ${D}/usr/bin/
+    install -m 0755 ${WORKDIR}/dlt_logstorage.conf ${D}/data/logs/dlt_logstorage.conf
+    install -m 0755 ${WORKDIR}/setlogstorage.sh ${D}/usr/bin/
 }
 
 SYSTEMD_SERVICE:${PN} += "dlt.service"
 SYSTEMD_SERVICE:${PN} += "dlt-system.service"
+
+RDEPENDS:${PN} += "bash"
 
 TOOLCHAIN_TARGET_TASK:append = " dlt-daemon-dev"
 
@@ -37,4 +39,5 @@ FILES:${PN}:append = " \
     ${sysconfdir}/dlt.conf \
     ${sysconfdir}/dlt-system.conf \
     /data/logs/dlt_logstorage.conf \
+    /usr/bin/setlogstorage.sh \
 "

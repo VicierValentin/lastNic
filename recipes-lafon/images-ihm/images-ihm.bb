@@ -20,7 +20,7 @@ LICENSE = "CLOSED"
 LIC_FILES_CHKSUM = ""
 
 
-SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/images-ihm.git;protocol=ssh;branch=${VAR_BRANCH_IMG}"
+SRC_URI = "git://github.com/MADIC-industries/images-ihm.git;protocol=ssh;branch=prod"
 
 # Modify these as desired
 PV = "1.0+git${SRCPV}"

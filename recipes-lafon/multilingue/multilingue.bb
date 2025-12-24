@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = ""
 
 # Created on  13 february 2024 by cdemenou
 
-SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/multilangue.git;protocol=ssh;branch=${VAR_BRANCH_LANG}"
+SRC_URI = "git://github.com/MADIC-industries/multilangue.git;protocol=ssh;branch=${VAR_BRANCH}"
 
 # Modify these as desired
 PV = "1.0+git${SRCPV}"

@@ -13,7 +13,7 @@ LICENSE = "CLOSED"
 LIC_FILES_CHKSUM = ""
 
 #FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
-SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/ihm.git;protocol=ssh;branch=${VAR_BRANCH}"
+SRC_URI = "git://github.com/MADIC-industries/ihm.git;protocol=ssh;branch=${VAR_BRANCH}"
 S = "${WORKDIR}/git"
 SRCREV = "${AUTOREV}"
 inherit systemd pkgconfig cmake
@@ -27,7 +27,7 @@ PR = "r0"
 
 # NOTE: no Makefile found, unable to determine what needs to be done
 
-DEPENDS:append= "sqlite3 lib-log gestion-bdd systemd lvgl lv-drivers czmq libgpiod lib-lon private-key sha256 openssl-native" 
+DEPENDS:append= "sqlite3 lib-log czmq cppzmq gestion-bdd systemd lvgl lv-drivers libgpiod private-key sha256 openssl-native" 
 
 
 do_compile:prepend() {
@@ -55,9 +55,7 @@ do_install() {
 }
 
 #INSANE_SKIP:${PN} = "ldflags"
-INSANE_SKIP:${PN} += "ldflags already-stripped"
-INHIBIT_PACKAGE_STRIP = "1"
-INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
+INSANE_SKIP:${PN} += "ldflags"
 
 FILES:${PN} = "/root/easy \
 	/usr/appid/ \

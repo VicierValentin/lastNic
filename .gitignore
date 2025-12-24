@@ -10,3 +10,5 @@ kas-files/build/cache/*
 .vscode/
 kas-files/build/tmp/**/
 kas-files/build/tmp/*
+kas-files/meta-arm
+kas-files/meta-openembedded

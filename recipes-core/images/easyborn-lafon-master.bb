@@ -28,15 +28,13 @@ IMAGE_INSTALL:append = " \
 	util-linux \
 	psmisc \
 	evtest \
-	valgrind \
-	tcpdump \
 	libgpiod \
 	libgpiod-dev \
 	libgpiod-tools \
 	bmap-tools \
-	nmap \
 	dlt-daemon \
 	dlt-daemon-systemd \
+	openssl \
 "
 
 
@@ -57,7 +55,6 @@ IMAGE_INSTALL:append = " \
 	controleur \
 	application \
 	webserver \
-	lib-lon \
 	module-lon \
 	lonifd-daemon \
 	bmap-tools \

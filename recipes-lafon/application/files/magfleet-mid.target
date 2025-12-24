@@ -1,6 +1,7 @@
 [Unit]
 Description= Magfleet MID applications
-Wants= magfleet-jrnl.service lon.service magfleet-ifsf.service magfleet-pde.service magfleet-sha256.service
+Wants=magfleet-application.target magfleet-jrnl.service lon.service magfleet-ifsf.service magfleet-pde.service magfleet-sha256.service
+PartOf=magfleet-application.target
 
 [Install]
 WantedBy=multi-user.target

@@ -1,93 +1,338 @@
 # meta-magfleet
 
+**Yocto/OpenEmbedded BSP layer for Lafon Technologies EasyBorn platform**
 
+This layer provides support for building embedded Linux distributions for the EasyBorn Lafon system, targeting BeagleBone-based hardware with custom Lafon extensions.
 
-## Getting started
+## Overview
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+`meta-magfleet` is a Yocto Project BSP (Board Support Package) layer that contains:
+- Custom machine configurations for BeagleBone Lafon variants
+- Lafon Technologies custom distribution (distro) configuration
+- Application recipes for the EasyBorn platform
+- Secure update infrastructure using SWUpdate
+- LON (Local Operating Network) bus support
+- Custom U-Boot and kernel configurations
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Layer Information
 
-## Add your files
+- **Layer Name:** meta-magfleet
+- **Layer Priority:** 17
+- **Compatible Series:** Kirkstone (Yocto 4.0)
+- **Maintainer:** Jocelyn Millard <jocelyn.millard@lafon.fr>
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+## Dependencies
+
+This layer depends on the following layers:
+
+- **poky** (Kirkstone) - Core Yocto Project reference distribution
+- **meta-openembedded** (Kirkstone) - Additional OE recipes
+  - meta-oe
+  - meta-python
+  - meta-networking
+  - meta-perl
+- **meta-ti** (Kirkstone) - Texas Instruments BSP layer
+- **meta-arm** (Yocto 4.0) - ARM architecture support
+- **meta-security** - Security hardening features
+- **meta-swupdate** (Kirkstone) - Software update framework
+
+## Prerequisites
+
+### System Requirements
+
+- Ubuntu 20.04 LTS or later (recommended)
+- Minimum 50GB free disk space
+- 8GB RAM (16GB recommended for parallel builds)
+
+### Required Packages
+
+```bash
+sudo apt-get update
+sudo apt-get install -y gawk wget git diffstat unzip texinfo gcc build-essential \
+    chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils \
+    iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev \
+    pylint3 xterm python3-subunit mesa-common-dev zstd liblz4-tool
+```
+
+### Install KAS Build Tool
+
+```bash
+pip3 install kas
+```
+
+## Building Images
+
+This layer uses [KAS](https://kas.readthedocs.io/) for simplified build configuration management.
+
+### Available Build Configurations
+
+The layer provides several KAS configuration files in `kas-files/`:
+
+| Configuration File | Target Machine | Distribution | Purpose |
+|-------------------|----------------|--------------|---------|
+| `kas-easy-lafon-master.yml` | beaglebone-lafon | lafon | Production master image |
+| `kas-easy-lafon-master-dev.yml` | beaglebone-lafon | lafon | Development master image |
+| `kas-easy-lafon-master-installer.yml` | beaglebone-lafon-installer | lafon-installer | Installation image |
+
+### Build Instructions
+
+1. **Clone the repository:**
+   ```bash
+   git clone git@github.com:MADIC-industries/meta-magfleet.git
+   cd meta-magfleet
+   ```
+
+2. **Build the desired image using KAS:**
+   
+   For production master image:
+   ```bash
+   kas -d build kas-files/kas-easy-lafon-master.yml
+   ```
+   
+   For development master image:
+   ```bash
+   kas -d build kas-files/kas-easy-lafon-master-dev.yml
+   ```
+   
+   For installer image:
+   ```bash
+   kas -d build kas-files/kas-easy-lafon-master-dev-installer.yml
+   ```
+
+   For inotify error:
+   ```bash
+   sudo sysctl fs.inotify.max_user_watches=524288
+   ```
+
+3. **Build artifacts location:**
+   
+   Built images will be located in:
+   ```
+   kas-files/build/tmp/deploy/images/beaglebone-lafon/
+   ```
+
+### Build Output Artifacts
+
+The build process generates several image formats:
+- **`.wic`** - Bootable disk image for SD card
+- **`.wic.bmap`** - Block map for efficient flashing with bmaptool
+- **`.ext4.gz`** - Compressed root filesystem
+- **`.tar.gz`** - Tarball of root filesystem
+- **`.swu`** - SWUpdate package for OTA updates (from update-image)
+
+## Machine Configurations
+
+### beaglebone-lafon
+Standard BeagleBone configuration with Lafon customizations for production deployment.
+
+### beaglebone-lafon-installer
+BeagleBone configuration optimized for installation and provisioning workflows.
+
+## Distribution Features
+
+The Lafon distribution (`lafon.conf`) includes:
+
+- **Init System:** systemd
+- **Update Mechanism:** SWUpdate with signed image support
+- **Security Features:** From meta-security layer
+- **Removed Features:** Bluetooth, ALSA, APM, RTC (minimal footprint)
+
+## Recipes and Applications
+
+### Core Applications (recipes-lafon/)
+
+- **application** - Main Lafon application
+- **controleur** - Controller component
+- **ihm** - Human-Machine Interface (HMI)
+- **webserver** - Web server component
+- **systeminit** - System initialization scripts
+- **lonifd-daemon** - LON interface daemon
+- **dlt-daemon** - Diagnostic Log and Trace daemon
+- **gestion-bdd** - Database management
+- **gestion-carte-sd** - SD card management
+
+### LON Bus Support
+
+- **module-lon** - LON bus kernel module
+- **lib-lon** - LON library
+- **lonifd-daemon** - LON interface daemon
+
+### Display and UI
+
+- **lvgl** - LittlevGL graphics library
+- **lv-drivers** - Display drivers for LVGL
+- **images-ihm** - HMI image assets
+
+### System Components
+
+- **lafon-growfs** - Filesystem expansion utility
+- **swupdate** - Software update client (with custom configuration)
+- **private-key** - Secure key management
+- **journal** - System journaling
+
+## Flashing Images to SD Card
+
+### Using bmaptool (Recommended)
+
+```bash
+sudo bmaptool copy --bmap easyborn-lafon-master-beaglebone-lafon.wic.bmap \
+    easyborn-lafon-master-beaglebone-lafon.wic /dev/sdX
+```
+
+### Using dd
+
+```bash
+sudo dd if=easyborn-lafon-master-beaglebone-lafon.wic of=/dev/sdX bs=4M status=progress
+sudo sync
+```
+
+Replace `/dev/sdX` with your SD card device.
+
+## Software Updates
+
+The system supports secure OTA updates using SWUpdate:
+
+1. **Generate update package:**
+   ```bash
+   bitbake update-image
+   ```
+
+2. **Deploy the `.swu` file** to the target device
+
+3. **Trigger update:**
+   ```bash
+   swupdate -i <update-package>.swu
+   ```
+
+Updates are cryptographically signed and verified before installation.
+
+## Development Workflow
+
+### Adding New Recipes
+
+1. Create recipe directory: `recipes-<category>/<recipe-name>/`
+2. Add recipe file: `<recipe-name>_<version>.bb`
+3. Add to image by modifying `recipes-core/images/easyborn-lafon-*.bb`
+
+### Customizing the Kernel
+
+Kernel modifications are in `recipes-kernel/linux/`. Use `.bbappend` files to add patches or configuration fragments.
+
+### Modifying U-Boot
+
+U-Boot customizations are in `recipes-bsp/u-boot/` and `recipes-bsp/u-boot-pulse/`.
+
+## Configuration Files
+
+### Layer Configuration
+- `conf/layer.conf` - Layer metadata and dependencies
+
+### Distribution Configuration
+- `conf/distro/lafon.conf` - Lafon distribution settings
+- `conf/distro/lafon-installer.conf` - Installer distribution settings
+
+### Machine Configuration
+- `conf/machine/beaglebone-lafon.conf` - Production machine settings
+- `conf/machine/beaglebone-lafon-installer.conf` - Installer machine settings
+
+### Site Configuration
+- `conf/site.conf` - Site-specific settings (git-ignored, create locally if needed)
+
+## WIC Image Layouts
+
+Custom WIC kickstart files define disk partitioning:
+- `wic/easyborn.wks` - Standard dual-partition layout for A/B updates
+- `wic/easybornInstall.wks` - Installation media layout
+- `wic/easyborn (MID).wks` - Alternative layout variant
+
+## Troubleshooting
+
+### Build Failures
+
+1. **Check disk space:** Builds require significant space
+   ```bash
+   df -h
+   ```
+
+2. **Clean temporary files:**
+   ```bash
+   kas shell kas-files/kas-easy-lafon-master-dev.yml -c "bitbake -c cleanall <recipe-name>"
+   ```
+
+3. **Full rebuild:**
+   ```bash
+   rm -rf kas-files/build/tmp
+   kas build kas-files/kas-easy-lafon-master-dev.yml
+   ```
+
+### Common Issues
+
+- **Git SSL errors:** Check proxy settings and certificates
+- **Fetch failures:** Verify network connectivity and mirror availability
+- **Package conflicts:** Check layer priorities and BBMASK settings
+
+## Directory Structure
 
 ```
-cd existing_repo
-git remote add origin https://bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/meta-magfleet.git
-git branch -M main
-git push -uf origin main
+meta-magfleet/
+├── conf/                      # Configuration files
+│   ├── layer.conf            # Layer configuration
+│   ├── distro/               # Distribution configs
+│   └── machine/              # Machine configs
+├── kas-files/                # KAS build configurations
+├── recipes-bsp/              # Bootloader and firmware
+├── recipes-connectivity/     # Network and SSH
+├── recipes-core/             # Core system recipes
+│   └── images/              # Image definitions
+├── recipes-kernel/           # Kernel recipes
+├── recipes-lafon/            # Lafon-specific applications
+├── recipes-support/          # Support packages (SWUpdate)
+└── wic/                      # Disk layout definitions
 ```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/meta-magfleet/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
 
 ## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+### Coding Standards
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+- Follow Yocto Project coding guidelines
+- Use 4 spaces for indentation in recipes
+- Add SPDX license identifiers to new files
+- Document recipe variables and purpose
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+### Submitting Changes
+
+1. Create a feature branch from `dev`
+2. Make changes and test builds
+3. Commit with descriptive messages
+4. Create merge request targeting `dev` branch
+
+### Testing
+
+Test changes by building all image variants:
+```bash
+kas build kas-files/kas-easy-lafon-master.yml
+kas build kas-files/kas-easy-lafon-master-dev.yml
+kas build kas-files/kas-easy-lafon-master-installer.yml
+```
 
 ## License
-For open source projects, say how it is licensed.
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+This layer is provided under the MIT License. See individual recipe files for component-specific licenses.
+
+## Maintainer
+
+**Jocelyn Millard**  
+Email: jocelyn.millard@lafon.fr  
+Organization: Lafon Technologies
+
+## Additional Resources
+
+- [Yocto Project Documentation](https://docs.yoctoproject.org/)
+- [OpenEmbedded Layer Index](https://layers.openembedded.org/)
+- [KAS Documentation](https://kas.readthedocs.io/)
+- [SWUpdate Documentation](https://sbabic.github.io/swupdate/)
+
+## Project Status
+
+Active development. Current version: 3.0 (Kirkstone-based)
+

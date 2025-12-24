@@ -15,10 +15,8 @@ LIC_FILES_CHKSUM = ""
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 inherit systemd pkgconfig cmake
 
-EXTRA_OECMAKE = ""
-#SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/easyborn-controleur-ftp.git;protocol=ssh;branch=${VAR_BRANCH}"
-SRC_URI = "git://git@bu-gitlab.lafon.fr/bu-alternative-energies/easyborn/easyborn-controleur-ftp.git;protocol=ssh;branch=${VAR_BRANCH}"
-
+EXTRA_OECMAKE = "-DSTRIP_BINARY=OFF"
+SRC_URI = "git://github.com/MADIC-industries/controleur.git;protocol=ssh;branch=${VAR_BRANCH}"
 
 # Modify these as desired
 PV = "1.0+git${SRCPV}"
@@ -29,7 +27,7 @@ S = "${WORKDIR}/git"
 PR = "r0"
 # NOTE: no Makefile found, unable to determine what needs to be done
 
-DEPENDS += "curl openssl sqlite3 gestion-bdd lib-log systemd libgpiod lib-lon private-key sha256 openssl-native"
+DEPENDS += "curl openssl czmq cppzmq sqlite3 gestion-bdd lib-log systemd libgpiod private-key sha256 openssl-native"
 
 do_compile:prepend() {
     cp ${STAGING_DATADIR}/private-key/private_key.pem ${WORKDIR}/build
@@ -67,9 +65,7 @@ do_install() {
 }
 
 
-INSANE_SKIP:${PN} += "ldflags already-stripped"
-INHIBIT_PACKAGE_STRIP = "1"
-INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
+INSANE_SKIP:${PN} += "ldflags"
 
 FILES:${PN} = "/root/easy \
 	/usr/appid/shas/yocto/EB_Ctrl \
