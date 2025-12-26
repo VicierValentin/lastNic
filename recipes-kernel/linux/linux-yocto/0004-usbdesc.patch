@@ -1,0 +1,30 @@
+From b8f496618420e99167e1fb6ddd9c28608b0346d5 Mon Sep 17 00:00:00 2001
+From: vvicier <vvicier@madic.com>
+Date: Fri, 26 Dec 2025 09:53:24 +0100
+Subject: [PATCH 4/4] usbdesc
+
+---
+ arch/arm/boot/dts/am335x-bone-common.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/arm/boot/dts/am335x-bone-common.dtsi b/arch/arm/boot/dts/am335x-bone-common.dtsi
+index 73d9809247e7..c53944a1df9e 100644
+--- a/arch/arm/boot/dts/am335x-bone-common.dtsi
++++ b/arch/arm/boot/dts/am335x-bone-common.dtsi
+@@ -222,6 +222,13 @@ &usb0 {
+ 	dr_mode = "peripheral";
+ 	interrupts-extended = <&intc 18 &tps 0>;
+ 	interrupt-names = "mc", "vbus";
++
++	hidg0: hid-gadget {
++		compatible = "linux,g_hid";
++		report-length = <8>;
++		report-desc = /incbin/("keyboard.desc");
++	};
++
+ };
+ 
+ &usb1 {
+-- 
+2.43.0
+

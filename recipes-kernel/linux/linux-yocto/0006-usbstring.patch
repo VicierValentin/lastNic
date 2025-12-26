@@ -1,0 +1,29 @@
+From 6739dd1b1bdd811b90c48734ace61e7acad134f9 Mon Sep 17 00:00:00 2001
+From: vvicier <vvicier@madic.com>
+Date: Fri, 26 Dec 2025 10:10:09 +0100
+Subject: [PATCH 7/7] usbstring
+
+---
+ drivers/usb/gadget/legacy/hid.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/usb/gadget/legacy/hid.c b/drivers/usb/gadget/legacy/hid.c
+index 3912cc805f3a..4256fc6730a0 100644
+--- a/drivers/usb/gadget/legacy/hid.c
++++ b/drivers/usb/gadget/legacy/hid.c
+@@ -67,9 +67,9 @@ static const struct usb_descriptor_header *otg_desc[2];
+ 
+ /* string IDs are assigned dynamically */
+ static struct usb_string strings_dev[] = {
+-	[USB_GADGET_MANUFACTURER_IDX].s = "",
+-	[USB_GADGET_PRODUCT_IDX].s = DRIVER_DESC,
+-	[USB_GADGET_SERIAL_IDX].s = "",
++	[USB_GADGET_MANUFACTURER_IDX].s = "DELL",
++	[USB_GADGET_PRODUCT_IDX].s = "USB Keyboard",
++	[USB_GADGET_SERIAL_IDX].s = "D-KBD-1255",
+ 	{  } /* end of list */
+ };
+ 
+-- 
+2.43.0
+

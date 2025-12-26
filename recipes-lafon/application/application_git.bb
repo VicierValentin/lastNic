@@ -16,23 +16,14 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 inherit systemd cmake pkgconfig
 
 SRC_URI = "git://github.com/MADIC-industries/main.git;protocol=ssh;branch=prod"
-SRC_URI += "file://magfleet-app.service"
-SRC_URI += "file://magfleet-ihm.service"
-SRC_URI += "file://magfleet-ctrl.service"
-SRC_URI += "file://magfleet-jrnl.service"
 #SRC_URI += "file://magfleet-sha256.service"
-SRC_URI += "file://lon.service"
-SRC_URI += "file://magfleet-application.target"
-SRC_URI += "file://magfleet-mid.target"
 SRC_URI += "file://20-i2c-screen.rules"
 SRC_URI += "file://30-btn.rules"
 SRC_URI += "file://tty-no-cursor-blink.service"
 SRC_URI += "file://no-cursor-blink.sh"
 SRC_URI += "file://public.pem"
-SRC_URI += "file://script_check_sd_card"
-SRC_URI += "file://magfleet-ifsf.service"
-SRC_URI += "file://magfleet-pde.service"
-SRC_URI += "file://magfleet-sha256.service"
+SRC_URI += "file://magfleet-application.target"
+SRC_URI += "file://magfleet-app.service"
 
 
 # Modify these as desired
@@ -60,17 +51,8 @@ do_install () {
 	install -m 644 ${WORKDIR}/20-i2c-screen.rules ${D}/etc/udev/rules.d/20-i2c-screen.rules
 	install -m 644 ${WORKDIR}/30-btn.rules ${D}/etc/udev/rules.d/30-btn.rules
 	install -d ${D}${systemd_unitdir}/system
-	install -m 644 ${WORKDIR}/magfleet-application.target ${D}/${systemd_unitdir}/system
-	install -m 644 ${WORKDIR}/magfleet-mid.target ${D}/${systemd_unitdir}/system
-	install -m 644 ${WORKDIR}/lon.service ${D}/${systemd_unitdir}/system	
 	install -m 644 ${WORKDIR}/magfleet-app.service ${D}/${systemd_unitdir}/system
-	install -m 644 ${WORKDIR}/magfleet-ihm.service ${D}/${systemd_unitdir}/system
-	install -m 644 ${WORKDIR}/magfleet-ctrl.service ${D}/${systemd_unitdir}/system
-	install -m 644 ${WORKDIR}/magfleet-jrnl.service ${D}/${systemd_unitdir}/system
-	install -m 644 ${WORKDIR}/magfleet-ifsf.service ${D}/${systemd_unitdir}/system
-	install -m 644 ${WORKDIR}/magfleet-pde.service ${D}/${systemd_unitdir}/system
-	install -m 644 ${WORKDIR}/magfleet-sha256.service ${D}/${systemd_unitdir}/system
-	#install -m 644 ${WORKDIR}/magfleet-sha256.service ${D}/${systemd_unitdir}/system
+	install -m 644 ${WORKDIR}/magfleet-application.target ${D}/${systemd_unitdir}/system
 	install -d ${D}/data
 	install -m 0644 ${WORKDIR}/public.pem ${D}/data/public.pem
 #	install -m 644 ${WORKDIR}/tty-no-cursor-blink.service ${D}/${systemd_unitdir}/system	
@@ -82,14 +64,6 @@ do_install () {
 SYSTEMD_PACKAGES = "${@bb.utils.contains('DISTRO_FEATURES','systemd','${PN}','',d)}"
 SYSTEMD_SERVICE:${PN} += "magfleet-application.target"
 SYSTEMD_SERVICE:${PN} += "magfleet-app.service"
-SYSTEMD_SERVICE:${PN} += "magfleet-ihm.service"
-SYSTEMD_SERVICE:${PN} += "magfleet-ctrl.service"
-SYSTEMD_SERVICE:${PN} += "magfleet-mid.target"
-SYSTEMD_SERVICE:${PN} += "magfleet-jrnl.service"
-SYSTEMD_SERVICE:${PN} += "magfleet-ifsf.service"
-SYSTEMD_SERVICE:${PN} += "magfleet-pde.service"
-SYSTEMD_SERVICE:${PN} += "magfleet-sha256.service"
-SYSTEMD_SERVICE:${PN} += "lon.service"
 INSANE_SKIP:${PN} = "ldflags"
 FILES:${PN} = "/root/easy \
 				/etc/systemd/system \
