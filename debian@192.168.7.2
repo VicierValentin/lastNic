@@ -1,0 +1,115 @@
+#!/bin/bash
+# USB HID Keyboard Gadget Setup Script for BeagleBone Black
+# This script configures the BBB to act as a USB keyboard device
+
+# Exit on error
+set -e
+
+# Check if running as root
+if [ "$EUID" -ne 0 ]; then 
+    echo "Please run as root (use sudo)"
+    exit 1
+fi
+
+# Load the USB gadget modules
+echo "Loading USB gadget kernel modules..."
+
+# Core USB gadget support
+modprobe libcomposite 2>/dev/null || echo "libcomposite already loaded or not available"
+modprobe usb_f_hid 2>/dev/null || echo "usb_f_hid already loaded or not available"
+
+# USB Device Controller drivers (try common ones)
+modprobe musb_hdrc 2>/dev/null || true
+modprobe musb_dsps 2>/dev/null || true      # TI AM335x (BeagleBone Black)
+modprobe dwc2 2>/dev/null || true           # DesignWare USB2.0 OTG controller
+modprobe dwc3 2>/dev/null || true           # DesignWare USB3.0 controller
+modprobe dummy_hcd 2>/dev/null || true      # Dummy/virtual USB controller (for testing)
+
+# Optional: Legacy gadget drivers
+modprobe g_hid 2>/dev/null || true
+
+echo "Module loading complete. Checking for USB Device Controller..."
+
+# Cleanup existing gadget if present
+if [ -d /sys/kernel/config/usb_gadget/keyboard ]; then
+    echo "Cleaning up existing gadget configuration..."
+    cd /sys/kernel/config/usb_gadget/keyboard
+    
+    # Disable gadget if enabled
+    if [ -e UDC ]; then
+        echo "" > UDC 2>/dev/null || true
+    fi
+    
+    # Remove symlinks
+    rm -f configs/c.1/hid.usb0 2>/dev/null || true
+    
+    # Remove directories
+    rmdir functions/hid.usb0 2>/dev/null || true
+    rmdir configs/c.1/strings/0x409 2>/dev/null || true
+    rmdir configs/c.1 2>/dev/null || true
+    rmdir strings/0x409 2>/dev/null || true
+    
+    cd /sys/kernel/config/usb_gadget/
+    rmdir keyboard 2>/dev/null || true
+    
+    sleep 1
+fi
+
+# Create gadget directory
+cd /sys/kernel/config/usb_gadget/
+mkdir -p keyboard
+cd keyboard
+
+# USB IDs (change these if needed)
+echo 0x1d6b > idVendor  # Linux Foundation
+echo 0x0104 > idProduct # Multifunction Composite Gadget
+echo 0x0100 > bcdDevice # v1.0.0
+echo 0x0200 > bcdUSB    # USB 2.0
+
+# Create strings directory for USB device description
+mkdir -p strings/0x409
+echo "fedcba9876543210" > strings/0x409/serialnumber
+echo "vvicier" > strings/0x409/manufacturer
+echo "BBB French AZERTY Keyboard" > strings/0x409/product
+
+# Create configuration
+mkdir -p configs/c.1/strings/0x409
+echo "Config 1: HID Keyboard" > configs/c.1/strings/0x409/configuration
+echo 250 > configs/c.1/MaxPower
+
+# Create HID function
+mkdir -p functions/hid.usb0
+echo 1 > functions/hid.usb0/protocol    # Keyboard
+echo 1 > functions/hid.usb0/subclass    # Boot Interface Subclass
+echo 8 > functions/hid.usb0/report_length
+
+# HID Report Descriptor for standard keyboard
+echo -ne \\x05\\x01\\x09\\x06\\xa1\\x01\\x05\\x07\\x19\\xe0\\x29\\xe7\\x15\\x00\\x25\\x01\\x75\\x01\\x95\\x08\\x81\\x02\\x95\\x01\\x75\\x08\\x81\\x03\\x95\\x05\\x75\\x01\\x05\\x08\\x19\\x01\\x29\\x05\\x91\\x02\\x95\\x01\\x75\\x03\\x91\\x03\\x95\\x06\\x75\\x08\\x15\\x00\\x25\\x65\\x05\\x07\\x19\\x00\\x29\\x65\\x81\\x00\\xc0 > functions/hid.usb0/report_desc
+
+# Link function to configuration
+ln -s functions/hid.usb0 configs/c.1/
+
+# Enable gadget
+UDC_DEVICE=$(ls /sys/class/udc 2>/dev/null | head -n1)
+
+if [ -z "$UDC_DEVICE" ]; then
+    echo "Error: No USB Device Controller (UDC) found!"
+    echo "This script requires hardware with USB gadget/OTG support (like BeagleBone Black)."
+    echo "Available UDCs: $(ls /sys/class/udc 2>/dev/null || echo 'none')"
+    exit 1
+fi
+
+echo "Using UDC: $UDC_DEVICE"
+echo $UDC_DEVICE > UDC
+
+# Set permissions on HID device
+sleep 1
+if [ -e /dev/hidg0 ]; then
+    chmod 666 /dev/hidg0
+else
+    echo "Warning: /dev/hidg0 not found. The gadget may not be fully initialized."
+    exit 1
+fi
+
+echo "USB HID Keyboard gadget configured successfully!"
+echo "Device is available at /dev/hidg0"
