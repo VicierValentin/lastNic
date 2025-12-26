@@ -1,0 +1,14 @@
+[Unit]
+Description=USB HID Gadget (Keyboard)
+After=systemd-modules-load.service
+After=sys-kernel-config.mount
+After=local-fs.target
+Requires=sys-kernel-config.mount
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/usb-hid-gadget-init.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

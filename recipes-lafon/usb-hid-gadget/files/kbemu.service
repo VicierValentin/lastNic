@@ -1,0 +1,9 @@
+[Unit]
+Description=Keyboard emulator
+
+[Service] 
+Type=simple
+ExecStart=/usr/bin/usb_keyboard -u /dev/input/event1
+
+[Install]
+WantedBy=multi-user.target
