@@ -1,0 +1,17 @@
+[Unit]
+Description=lastNic USB HID Keyboard Gadget Setup
+# BBB Debian activates USB gadget hardware via usb-gadget.target
+After=usb-gadget.target sys-kernel-config.mount
+Requires=sys-kernel-config.mount
+# Prevent g_multi from loading alongside us
+Conflicts=bb-usb-gadgets.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/home/vvicier/setup_gadget.sh
+ExecStop=/home/vvicier/setup_gadget.sh teardown
+TimeoutStartSec=30
+
+[Install]
+WantedBy=multi-user.target
