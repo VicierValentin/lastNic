@@ -18,7 +18,11 @@
  *   lastnic [options] <textfile>
  *
  * Options:
- *   -d <ms>    Delay between keystrokes in milliseconds (default: 10)
+ *   -d <ms>    Delay between keystrokes in milliseconds (default: 2)
+ *
+ * Special tags in input file:
+ *   <DELAY:ms>  pause for ms milliseconds (e.g. <DELAY:500>)
+ *   <ENTER>, <TAB>, <F1>...<F12>, <CTRL+C>, <WIN>, etc.
  *   -D <path>  HID device path (default: /dev/hidg0)
  *   -v         Verbose: log every keystroke
  *   -h         Show this help
@@ -27,7 +31,7 @@
  *   sudo ./scripts/setup_gadget.sh
  */
 
-#define _POSIX_C_SOURCE 199309L
+#define _POSIX_C_SOURCE 200809L  /* strncasecmp, nanosleep */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,14 +50,14 @@
  * Constants
  * ---------------------------------------------------------------------- */
 #define DEFAULT_HID_DEV       "/dev/hidg0"
-#define DEFAULT_DELAY_MS      10
+#define DEFAULT_DELAY_MS      2
 #define HID_REPORT_SIZE       8
 #define TAG_BUF_MAX           64
 /* Timeout waiting for the USB host to poll the HID IN endpoint.
  * Once g_multi is gone and the gadget is enumerated, the host polls
  * every 8 ms. We retry for up to 10 s before giving up. */
 #define HID_WRITE_TIMEOUT_MS  10000
-#define HID_RETRY_INTERVAL_MS 50   /* 20 attempts/s max — don't starve the CPU */
+#define HID_RETRY_INTERVAL_MS 10   /* retry quickly — host polls every 8 ms */
 
 /* Forward declaration */
 static void sleep_ms(unsigned int ms);
@@ -174,6 +178,16 @@ static int send_tag(int fd, const char *tag_content,
     char buf[TAG_BUF_MAX];
     strncpy(buf, tag_content, TAG_BUF_MAX - 1);
     buf[TAG_BUF_MAX - 1] = '\0';
+
+    /* Handle <DELAY:ms> — pause without sending a keystroke */
+    str_toupper(buf);
+    if (strncmp(buf, "DELAY:", 6) == 0) {
+        unsigned int ms = (unsigned int)atoi(buf + 6);
+        if (verbose)
+            fprintf(stderr, "[verbose] <DELAY:%u>\n", ms);
+        sleep_ms(ms);
+        return 0;
+    }
 
     hid_key_t k;
     if (parse_special_tag(buf, &k) < 0) {

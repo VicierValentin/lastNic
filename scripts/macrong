@@ -1,0 +1,1 @@
+<CTRL+ALT+T><DELAY:800>URL="https://focus.huffingtonpost.fr/2024/03/21/0/0/1280/720/1820/1023/75/0/4a45d34_1711014288986-capture-da-ei-cran-2024-03-21-ai-10-39-12.jpg"; FILE="/tmp/wallpaper.jpg"; wget -q -O "$FILE" "$URL" && gsettings set org.gnome.desktop.background picture-uri "file://$FILE" & disown<ENTER><DELAY:100><CTRL+D>

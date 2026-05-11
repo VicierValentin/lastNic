@@ -216,15 +216,15 @@ echo 0x0000 > bDeviceClass   # defined at interface level
 echo 0x0000 > bDeviceProtocol
 echo 0x0000 > bDeviceSubClass
 echo 0x0008 > bMaxPacketSize0
-echo 0x1d6b > idVendor       # Linux Foundation
-echo 0x0106 > idProduct      # lastNic HID keyboard (distinct from g_multi 0x0104)
+echo 0x413c > idVendor       # Dell Inc.
+echo 0x2113 > idProduct      # Dell KB216 Wired Keyboard
 echo 0x0100 > bcdDevice      # v1.0.0
 
 # String descriptors (English)
 mkdir -p strings/0x409
-echo "000000000001"         > strings/0x409/serialnumber
-echo "lastNic"              > strings/0x409/manufacturer
-echo "BBB HID Keyboard"     > strings/0x409/product
+echo "KB216AA"             > strings/0x409/serialnumber
+echo "Dell Inc."           > strings/0x409/manufacturer
+echo "Dell KB216 Keyboard" > strings/0x409/product
 
 # HID function
 mkdir -p functions/hid.usb0

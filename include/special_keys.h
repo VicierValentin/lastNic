@@ -161,12 +161,24 @@ static inline uint8_t lookup_modifier(const char *token)
 /**
  * Look up a named key token.
  * Returns the HID keycode if found, 0 otherwise.
+ * Also handles single printable ASCII characters (A-Z, 0-9, etc.)
+ * after str_toupper() has been applied to the tag.
  */
 static inline uint8_t lookup_named_key(const char *token)
 {
     for (int i = 0; named_keys[i].name != NULL; i++)
         if (strcmp(token, named_keys[i].name) == 0)
             return named_keys[i].keycode;
+
+    /* Single printable ASCII character — convert back to lowercase for keymap */
+    if (token[1] == '\0') {
+        unsigned char c = (unsigned char)token[0];
+        /* str_toupper was applied, so A-Z → look up as lowercase in keymap */
+        if (c >= 'A' && c <= 'Z')
+            c = c - 'A' + 'a';
+        if (c < 128 && keymap[c].keycode != 0x00)
+            return keymap[c].keycode;
+    }
     return 0;
 }
 
@@ -196,11 +208,18 @@ static int parse_special_tag(char *tag, hid_key_t *out)
         char *next = strtok_r(NULL, "+", &saveptr);
 
         if (next == NULL) {
-            /* Last token — must be the key */
+            /* Last token — try as a named key first */
             uint8_t kc = lookup_named_key(token);
-            if (kc == 0x00)
-                return -1;
-            out->keycode = kc;
+            if (kc != 0x00) {
+                out->keycode = kc;
+            } else {
+                /* Fall back: maybe it's a standalone modifier (e.g. <WIN>, <CTRL>) */
+                uint8_t mod = lookup_modifier(token);
+                if (mod == 0x00)
+                    return -1;
+                out->modifier |= mod;
+                /* keycode stays 0x00 — sends modifier-only HID report */
+            }
         } else {
             /* Intermediate token — must be a modifier */
             uint8_t mod = lookup_modifier(token);
@@ -213,7 +232,8 @@ static int parse_special_tag(char *tag, hid_key_t *out)
         token = next;
     }
 
-    return (out->keycode != 0x00) ? 0 : -1;
+    /* Valid if we have a keycode OR at least one modifier (modifier-only press) */
+    return (out->keycode != 0x00 || out->modifier != 0x00) ? 0 : -1;
 }
 
 #endif /* SPECIAL_KEYS_H */
