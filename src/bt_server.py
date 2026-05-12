@@ -41,6 +41,12 @@ RFCOMM_CHANNEL: int  = 1
 MACROS_DIR: str      = os.path.expanduser("~/macros")
 LASTNIC_BIN: str     = os.path.expanduser("~/lastnic")
 
+# Keyboard layout of the target PC: "us" or "fr"
+# Can be changed at runtime via the 'layout <name>' command.
+LASTNIC_LAYOUT: str  = "us"
+
+_VALID_LAYOUTS: set  = {"us", "fr"}
+
 # Delay (seconds) before starting lastnic after a 'run' command.
 # Gives the target window time to gain focus so no keystrokes are lost.
 STARTUP_DELAY_S: float = 0.0
@@ -119,6 +125,16 @@ def cmd_stop(conn: socket.socket) -> None:
     _send(conn, "OK stopped")
 
 
+def cmd_layout(conn: socket.socket, name: str) -> None:
+    global LASTNIC_LAYOUT
+    if name not in _VALID_LAYOUTS:
+        _send(conn, f"ERR unknown layout '{name}' (supported: {', '.join(sorted(_VALID_LAYOUTS))})")
+        return
+    LASTNIC_LAYOUT = name
+    _send(conn, f"OK layout set to {name}")
+    log.info("layout changed to %s", name)
+
+
 def cmd_run(conn: socket.socket, name: str) -> None:
     global _running_proc, _running_name
 
@@ -140,9 +156,9 @@ def cmd_run(conn: socket.socket, name: str) -> None:
     try:
         log_file = open(os.path.expanduser("~/lastnic.log"), "a")
         _running_proc = subprocess.Popen(
-            [LASTNIC_BIN, "-v", macro_path],
-            stdout=log_file,
-            stderr=log_file,
+            [LASTNIC_BIN, "-l", LASTNIC_LAYOUT, macro_path],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
         )
         _running_name = name
         _send(conn, f"OK running {name}")
@@ -187,6 +203,11 @@ def handle_client(conn: socket.socket, addr: tuple) -> None:
                     cmd_status(conn)
                 elif verb == "stop":
                     cmd_stop(conn)
+                elif verb == "layout":
+                    if not arg:
+                        _send(conn, f"OK current layout: {LASTNIC_LAYOUT}")
+                    else:
+                        cmd_layout(conn, arg.lower())
                 elif verb == "run":
                     if not arg:
                         _send(conn, "ERR usage: run <name>")

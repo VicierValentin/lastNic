@@ -44,7 +44,10 @@
 #include <time.h>
 
 #include "../include/keymap.h"
+#include "../include/keymap_fr.h"
 #include "../include/special_keys.h"
+
+typedef enum { LAYOUT_US, LAYOUT_FR } layout_t;
 
 /* -------------------------------------------------------------------------
  * Constants
@@ -144,7 +147,8 @@ static int send_key(int fd, const hid_key_t *k,
 /* -------------------------------------------------------------------------
  * Send one ASCII character
  * ---------------------------------------------------------------------- */
-static int send_ascii(int fd, int ch, unsigned int delay_ms, int verbose)
+static int send_ascii(int fd, int ch, unsigned int delay_ms, int verbose,
+                      const hid_key_t *km)
 {
     if (ch < 0 || ch > 127) {
         if (verbose)
@@ -152,7 +156,7 @@ static int send_ascii(int fd, int ch, unsigned int delay_ms, int verbose)
         return 0;
     }
 
-    const hid_key_t *k = &keymap[(uint8_t)ch];
+    const hid_key_t *k = &km[(uint8_t)ch];
     if (k->keycode == 0x00) {
         if (verbose)
             fprintf(stderr, "  [lastnic] SKIP  0x%02X '%c' (no HID mapping)\n",
@@ -173,13 +177,14 @@ static int send_ascii(int fd, int ch, unsigned int delay_ms, int verbose)
  * Parse and send a <TAG> token
  * ---------------------------------------------------------------------- */
 static int send_tag(int fd, const char *tag_content,
-                    unsigned int delay_ms, int verbose)
+                    unsigned int delay_ms, int verbose,
+                    const hid_key_t *km)
 {
     char buf[TAG_BUF_MAX];
     strncpy(buf, tag_content, TAG_BUF_MAX - 1);
     buf[TAG_BUF_MAX - 1] = '\0';
 
-    /* Handle <DELAY:ms> — pause without sending a keystroke */
+    /* Handle <DELAY:ms> - pause without sending a keystroke */
     str_toupper(buf);
     if (strncmp(buf, "DELAY:", 6) == 0) {
         unsigned int ms = (unsigned int)atoi(buf + 6);
@@ -190,7 +195,7 @@ static int send_tag(int fd, const char *tag_content,
     }
 
     hid_key_t k;
-    if (parse_special_tag(buf, &k) < 0) {
+    if (parse_special_tag(buf, &k, km) < 0) {
         fprintf(stderr, "Warning: unknown tag <%s>, skipped\n", tag_content);
         return 0;
     }
@@ -215,6 +220,7 @@ typedef enum { ST_NORMAL, ST_IN_TAG } parse_state_t;
 
 static int process_file(FILE *fp, int hid_fd,
                         unsigned int delay_ms, int verbose,
+                        const hid_key_t *km,
                         long *out_sent, long *out_skipped)
 {
     parse_state_t state   = ST_NORMAL;
@@ -231,9 +237,9 @@ static int process_file(FILE *fp, int hid_fd,
             if (ch == '<') {
                 int next = fgetc(fp);
                 if (next == '<') {
-                    /* '<<' -> literal '<' : Shift+, on US layout */
-                    hid_key_t lt = { HID_MOD_LEFT_SHIFT, 0x36 };
-                    if (send_key(hid_fd, &lt, delay_ms, verbose, "'<'") < 0)
+                    /* '<<' -> literal '<' : look up in active keymap */
+                    const hid_key_t *lt = &km['<'];
+                    if (send_key(hid_fd, lt, delay_ms, verbose, "'<'") < 0)
                         return -1;
                     sent++;
                 } else {
@@ -250,9 +256,9 @@ static int process_file(FILE *fp, int hid_fd,
                         ungetc(next, fp);
                     ch = '\n';
                 }
-                int rc = send_ascii(hid_fd, ch, delay_ms, verbose);
+                int rc = send_ascii(hid_fd, ch, delay_ms, verbose, km);
                 if (rc < 0) return -1;
-                if (ch < 128 && keymap[(uint8_t)ch].keycode != 0x00)
+                if (ch < 128 && km[(uint8_t)ch].keycode != 0x00)
                     sent++;
                 else
                     skipped++;
@@ -264,7 +270,7 @@ static int process_file(FILE *fp, int hid_fd,
                 tag_buf[tag_len] = '\0';
                 state = ST_NORMAL;
                 if (tag_len > 0) {
-                    int rc = send_tag(hid_fd, tag_buf, delay_ms, verbose);
+                    int rc = send_tag(hid_fd, tag_buf, delay_ms, verbose, km);
                     if (rc < 0) return -1;
                     sent++;
                 }
@@ -275,16 +281,16 @@ static int process_file(FILE *fp, int hid_fd,
                 fprintf(stderr,
                         "Warning: unclosed tag '<%s', treating as literal text\n",
                         tag_buf);
-                hid_key_t lt = { HID_MOD_LEFT_SHIFT, 0x36 };
+                hid_key_t lt = { km['<'].modifier, km['<'].keycode };
                 if (send_key(hid_fd, &lt, delay_ms, verbose, "'<'") < 0)
                     return -1;
                 for (int i = 0; i < tag_len; i++) {
                     if (send_ascii(hid_fd, (unsigned char)tag_buf[i],
-                                   delay_ms, verbose) < 0)
+                                   delay_ms, verbose, km) < 0)
                         return -1;
                 }
                 /* Send the newline that terminated the line */
-                if (send_ascii(hid_fd, '\n', delay_ms, verbose) < 0)
+                if (send_ascii(hid_fd, '\n', delay_ms, verbose, km) < 0)
                     return -1;
                 state   = ST_NORMAL;
                 tag_len = 0;
@@ -324,6 +330,7 @@ static void print_usage(const char *prog)
         "Options:\n"
         "  -d <ms>      Delay between keystrokes in ms (default: %d)\n"
         "  -D <path>    HID device path (default: %s)\n"
+        "  -l <layout>  Keyboard layout on the host PC: us (default), fr\n"
         "  -v           Verbose: log every keystroke sent\n"
         "  -h           Show this help\n"
         "\n"
@@ -348,16 +355,25 @@ int main(int argc, char *argv[])
 {
     const char  *hid_dev  = DEFAULT_HID_DEV;
     unsigned int delay_ms = DEFAULT_DELAY_MS;
+    layout_t     layout   = LAYOUT_US;
     int          verbose  = 0;
     int          opt;
 
-    while ((opt = getopt(argc, argv, "d:D:vh")) != -1) {
+    while ((opt = getopt(argc, argv, "d:D:l:vh")) != -1) {
         switch (opt) {
         case 'd':
             delay_ms = (unsigned int)atoi(optarg);
             break;
         case 'D':
             hid_dev = optarg;
+            break;
+        case 'l':
+            if (strcmp(optarg, "fr") == 0)      layout = LAYOUT_FR;
+            else if (strcmp(optarg, "us") == 0) layout = LAYOUT_US;
+            else {
+                fprintf(stderr, "Error: unknown layout '%s' (use: us, fr)\n", optarg);
+                return 1;
+            }
             break;
         case 'v':
             verbose = 1;
@@ -412,11 +428,14 @@ int main(int argc, char *argv[])
     }
 
     if (verbose)
-        printf("[lastnic] '%s' -> %s  delay=%u ms\n",
-               textfile, hid_dev, delay_ms);
+        printf("[lastnic] '%s' -> %s  delay=%u ms  layout=%s\n",
+               textfile, hid_dev, delay_ms,
+               layout == LAYOUT_FR ? "fr" : "us");
+
+    const hid_key_t *active_keymap = (layout == LAYOUT_FR) ? keymap_fr : keymap;
 
     long sent = 0, skipped = 0;
-    int rc = process_file(fp, hid_fd, delay_ms, verbose, &sent, &skipped);
+    int rc = process_file(fp, hid_fd, delay_ms, verbose, active_keymap, &sent, &skipped);
 
     fclose(fp);
     close(hid_fd);

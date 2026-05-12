@@ -164,20 +164,20 @@ static inline uint8_t lookup_modifier(const char *token)
  * Also handles single printable ASCII characters (A-Z, 0-9, etc.)
  * after str_toupper() has been applied to the tag.
  */
-static inline uint8_t lookup_named_key(const char *token)
+static inline uint8_t lookup_named_key(const char *token, const hid_key_t *km)
 {
     for (int i = 0; named_keys[i].name != NULL; i++)
         if (strcmp(token, named_keys[i].name) == 0)
             return named_keys[i].keycode;
 
-    /* Single printable ASCII character — convert back to lowercase for keymap */
+    /* Single printable ASCII character — use the active keymap */
     if (token[1] == '\0') {
         unsigned char c = (unsigned char)token[0];
-        /* str_toupper was applied, so A-Z → look up as lowercase in keymap */
+        /* str_toupper was applied, so A-Z → look up as lowercase */
         if (c >= 'A' && c <= 'Z')
             c = c - 'A' + 'a';
-        if (c < 128 && keymap[c].keycode != 0x00)
-            return keymap[c].keycode;
+        if (c < 128 && km[c].keycode != 0x00)
+            return km[c].keycode;
     }
     return 0;
 }
@@ -193,7 +193,7 @@ static inline uint8_t lookup_named_key(const char *token)
  * @param out     Output hid_key_t (modifier + keycode)
  * @return        0 on success, -1 if the tag is not recognised
  */
-static int parse_special_tag(char *tag, hid_key_t *out)
+static int parse_special_tag(char *tag, hid_key_t *out, const hid_key_t *km)
 {
     out->modifier = 0x00;
     out->keycode  = 0x00;
@@ -209,7 +209,7 @@ static int parse_special_tag(char *tag, hid_key_t *out)
 
         if (next == NULL) {
             /* Last token — try as a named key first */
-            uint8_t kc = lookup_named_key(token);
+            uint8_t kc = lookup_named_key(token, km);
             if (kc != 0x00) {
                 out->keycode = kc;
             } else {
