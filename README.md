@@ -11,9 +11,22 @@ its content on the PC it is connected to via the mini-USB port.
 # Install the ARM cross-compiler (once)
 sudo apt install gcc-arm-linux-gnueabihf
 
-# Build
-./cross-compile.sh
-# → binary: build-arm/lastnic
+# Build only
+./cross-compile.sh build       # → build-arm/lastnic
+
+# Build + deploy to BBB
+./cross-compile.sh deploy
+
+# Apply BBB system config only (BlueZ, compat mode, service install)
+./cross-compile.sh configure
+
+# Remove build artefacts
+./cross-compile.sh clean
+```
+
+Environment overrides:
+```bash
+BBB_HOST=root@192.168.1.10 ./cross-compile.sh deploy
 ```
 
 ---
@@ -26,12 +39,7 @@ ssh-copy-id vvicier@10.0.0.221
 
 # Build + deploy in one step
 ./cross-compile.sh deploy
-# Copies lastnic and scripts/setup_gadget.sh to vvicier@10.0.0.221:~/
-```
-
-Or manually:
-```bash
-scp build-arm/lastnic scripts/setup_gadget.sh vvicier@10.0.0.221:~/
+# Copies: lastnic, setup_gadget.sh, bt_server.py, macros/, lastnic-bt.service
 ```
 
 ---
@@ -103,5 +111,71 @@ Done.<ENTER>
 |------|-------------|---------|
 | `-d <ms>` | Delay between keystrokes (ms) | `10` |
 | `-D <path>` | HID device path | `/dev/hidg0` |
+| `-l <layout>` | Keyboard layout: `us` or `fr` (AZERTY) | `us` |
 | `-v` | Verbose output | off |
 | `-h` | Help | — |
+
+---
+
+## 6. Bluetooth remote control
+
+The BBB can receive macro commands wirelessly from a PC over Bluetooth RFCOMM.
+A USB BT dongle (USB-BT 500) is plugged into the BBB's USB-A port.
+
+### First-time pairing (once)
+
+```bash
+# On BBB
+bluetoothctl agent NoInputNoOutput
+bluetoothctl default-agent
+bluetoothctl discoverable on
+bluetoothctl pairable on
+
+# On PC
+bluetoothctl
+  pair BC:FC:E7:26:35:F3
+  trust BC:FC:E7:26:35:F3
+
+# On BBB — turn off discovery when done
+bluetoothctl discoverable off
+```
+
+### BBB daemon — `bt_server.py`
+
+Installed and auto-started by the `lastnic-bt` systemd service (deployed by `./cross-compile.sh deploy`).
+
+```bash
+# Manual start (for testing)
+python3 ~/bt_server.py
+
+# Service management
+sudo systemctl status  lastnic-bt
+sudo systemctl restart lastnic-bt
+sudo journalctl -u lastnic-bt -f
+```
+
+### PC client — `scripts/bt_client.py`
+
+The BBB MAC is baked in (`BC:FC:E7:26:35:F3`). Override with `BBB_MAC` env var.
+
+```bash
+# One-shot commands
+python3 scripts/bt_client.py list           # list available macros
+python3 scripts/bt_client.py run macrong    # run a macro
+python3 scripts/bt_client.py run macrong2
+python3 scripts/bt_client.py status         # is a macro running?
+python3 scripts/bt_client.py stop           # stop running macro
+python3 scripts/bt_client.py layout fr      # switch layout (us/fr)
+
+# Interactive REPL (no args)
+python3 scripts/bt_client.py
+
+# Override MAC
+BBB_MAC=XX:XX:XX:XX:XX:XX python3 scripts/bt_client.py list
+```
+
+### Macro file format
+
+Macros live in `~/macros/` on the BBB. Same tag syntax as the local `lastnic` command.
+The active keyboard layout (`us` / `fr`) is set in `bt_server.py` (`LASTNIC_LAYOUT`) and
+can be changed at runtime with `layout <name>`.
