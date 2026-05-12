@@ -1,0 +1,21 @@
+[Unit]
+Description=lastNic Bluetooth RFCOMM Command Daemon
+After=bluetooth.service
+Requires=bluetooth.service
+
+[Service]
+Type=simple
+User=vvicier
+
+# Power on the adapter and enable Page Scan (PSCAN) so clients can connect
+ExecStartPre=/usr/bin/bluetoothctl power on
+ExecStartPre=/usr/bin/bluetoothctl pairable on
+ExecStartPre=+/usr/bin/hciconfig hci0 piscan
+
+ExecStart=/usr/bin/python3 /home/vvicier/bt_server.py
+
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

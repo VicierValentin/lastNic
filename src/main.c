@@ -388,6 +388,21 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    /* Warmup: send null reports for ~300 ms to survive USB selective suspend.
+     * When the HID device has been idle, the USB host suspends it. The first
+     * real report is silently dropped during the host-side resume handshake.
+     * Sending null (all-keys-released) reports at the polling interval keeps
+     * the endpoint active until the host is fully awake and polling again. */
+    {
+        const int warmup_cycles = 10;
+        const int warmup_gap_ms = 30;   /* > USB HS HID poll interval (8 ms) */
+        for (int i = 0; i < warmup_cycles; i++) {
+            if (hid_release_keys(hid_fd) < 0)
+                break; /* hard error — process_file will report it */
+            sleep_ms(warmup_gap_ms);
+        }
+    }
+
     FILE *fp = fopen(textfile, "r");
     if (!fp) {
         fprintf(stderr, "Error: cannot open '%s': %s\n",
